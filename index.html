@@ -3,66 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE PANTHEON | Mission Control</title>
+    <title>THE PANTHEON | Workstation</title>
     <style>
-        :root { --blue: #00d2ff; --dark: #050505; --card: rgba(20, 25, 35, 0.95); }
-        body { background: var(--dark); color: white; font-family: sans-serif; margin: 0; padding: 20px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .title { font-size: 2rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0; color: white; text-shadow: 0 0 10px var(--blue); }
-        .version { font-size: 0.6rem; letter-spacing: 0.5em; color: var(--blue); margin-top: 10px; opacity: 0.7; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 800px; margin: 0 auto; }
-        .card { background: var(--card); border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .card:active { transform: scale(0.95); border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
-        .card-title { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 10px 0 2px 0; }
-        .card-role { font-size: 0.5rem; color: #666; text-transform: uppercase; margin: 0; }
-        .status { font-size: 0.5rem; color: #00ff88; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .dot { width: 6px; height: 6px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 5px #00ff88; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Fira+Code:wght@300;500&display=swap');
+        :root { --red: #ff003c; --cyan: #00d2ff; --dark: #020202; --card: rgba(10, 10, 15, 0.9); }
+        
+        body { 
+            background: var(--dark); color: #e0e0e0; font-family: 'Fira Code', monospace; 
+            margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* CRT Scanline Effect */
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 1000; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .glitch { animation: glitch 1s linear infinite; text-shadow: 2px 0 var(--red), -2px 0 var(--cyan); }
+        @keyframes glitch { 
+            0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); } 100% { transform: translate(0); }
+        }
+
+        .header { border-bottom: 1px solid var(--red); padding: 20px; background: rgba(255,0,0,0.05); text-align: left; }
+        .stream-container { height: 200px; background: rgba(0,0,0,0.8); border: 1px solid #333; margin: 10px; overflow-y: auto; padding: 10px; font-size: 10px; color: var(--cyan); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 10px; }
+        .card { 
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 4px;
+            cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .card::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--cyan); transform: scaleX(0); transition: 0.3s; }
+        .card:hover { background: rgba(255,255,255,0.05); border-color: var(--cyan); }
+        .card:hover::after { transform: scaleX(1); }
+        
+        .card-name { font-size: 12px; color: white; margin-bottom: 4px; font-weight: bold; }
+        .card-role { font-size: 9px; color: #666; text-transform: uppercase; }
+
+        .chat-widget { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); border-top: 1px solid var(--cyan); padding: 15px; z-index: 100; }
+        .chat-log { height: 120px; overflow-y: auto; margin-bottom: 10px; font-size: 11px; }
+        .chat-input { background: black; border: 1px solid #333; width: 100%; color: white; padding: 10px; font-family: inherit; font-size: 12px; outline: none; }
+        .chat-input:focus { border-color: var(--cyan); }
+
+        .msg-bot { color: var(--cyan); margin-bottom: 4px; }
+        .msg-user { color: var(--red); margin-bottom: 4px; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-        .modal-content { background: var(--card); border: 1px solid var(--blue); border-radius: 30px; width: 100%; max-width: 400px; padding: 30px; text-align: center; }
-        .terminal { background: black; border-radius: 15px; height: 150px; margin: 20px 0; padding: 15px; text-align: left; font-family: monospace; font-size: 10px; color: #00ff88; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); }
-        .btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--blue); color: white; border-radius: 15px; font-size: 10px; letter-spacing: 0.2em; cursor: pointer; }
-        .btn:active { background: rgba(0, 210, 255, 0.3); }
-        .close-btn { color: #555; font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; margin-top: 20px; border: none; background: none; cursor: pointer; }
-        svg { width: 32px; height: 32px; fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .modal-content { background: #080808; border: 1px solid var(--cyan); width: 100%; max-width: 500px; padding: 30px; position: relative; }
+        
+        .btn { border: 1px solid var(--cyan); background: transparent; color: var(--cyan); padding: 12px; width: 100%; margin-top: 10px; cursor: pointer; font-family: inherit; text-transform: uppercase; font-size: 11px; }
+        .btn:hover { background: var(--cyan); color: black; }
+        
+        .status-dot { width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px var(--cyan); }
     </style>
 </head>
 <body>
-    <div class="header" onclick="alert('PANTHEON DEBUG: JS IS ACTIVE')">
-        <h1 class="title">THE PANTHEON</h1>
-        <p class="version">FORGEMASTER COMMAND // v2.4 (HARD-LINKED)</p>
+    <header class="header">
+        <div class="orbitron glitch" style="font-size: 20px; color: white;">PANTHEON_OS_v2.5</div>
+        <div style="font-size: 9px; color: var(--red); letter-spacing: 2px;">FORGEMASTER WORKSTATION // ENCRYPTED</div>
+    </header>
+
+    <div class="stream-container" id="stream">
+        <div style="color: #444; margin-bottom: 5px;">[ SYSTEM INITIALIZING... ]</div>
     </div>
 
-    <div class="grid" id="grid"></div>
+    <div class="grid" id="bot-grid"></div>
+
+    <div style="height: 250px;"></div> <!-- Spacer for chat -->
+
+    <div class="chat-widget">
+        <div class="chat-log" id="chat-log">
+            <div class="msg-bot">[System] Welcome, Forgemaster. The Pantheon is standing by.</div>
+        </div>
+        <input type="text" class="chat-input" id="chat-input" placeholder="SEND COMMAND..." onkeydown="if(event.key==='Enter') sendMessage()">
+    </div>
 
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="m-title" style="margin:0; letter-spacing: 0.2em;">NAME</h2>
-            <p id="m-role" style="font-size: 0.5rem; color: var(--blue); margin-top: 5px; letter-spacing: 0.4em;">ROLE</p>
-            <div class="terminal" id="term"></div>
-            <button class="btn" onclick="cmd('INITIALIZE')">INITIALIZE</button>
-            <button class="btn" onclick="cmd('STATUS')">STATUS CHECK</button>
-            <button class="close-btn" onclick="closeModal()">Disconnect</button>
+            <div class="orbitron" id="m-title" style="font-size: 24px; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px;">BOT_NAME</div>
+            <div id="m-role" style="font-size: 10px; color: var(--red); margin-bottom: 20px;">ROLE_IDENTIFIER</div>
+            
+            <div style="background: black; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 11px;">
+                <div style="color: #666; margin-bottom: 10px;">CORE_SIGNAL:</div>
+                <div id="m-status" style="color: var(--cyan);">AWAITING SIGNAL...</div>
+            </div>
+
+            <button class="btn" onclick="botAction('INITIALIZE')">Initialize Core</button>
+            <button class="btn" onclick="botAction('SYNC')">Sync Neural Link</button>
+            <button class="btn" onclick="closeModal()" style="border-color: #333; color: #555; margin-top: 30px;">Terminate Session</button>
         </div>
     </div>
 
     <script>
         const bots = [
-            {n:"MetaPrime", r:"Architect"}, {n:"OpenPRIME", r:"Orchestrator"},
-            {n:"MidasPrime", r:"Treasury"}, {n:"KratosPrime", r:"Enforcer"},
-            {n:"ZapiaPrime", r:"Conduit"}, {n:"SolosPrime", r:"Soul"}
+            {n:"MetaPrime", r:"Architect", s:"Constructing system frameworks..."},
+            {n:"OpenPRIME", r:"Orchestrator", s:"Balancing sub-neural loads..."},
+            {n:"MidasPrime", r:"Treasury", s:"Auditing digital vaults (Signal: High)"},
+            {n:"KratosPrime", r:"Enforcer", s:"Monitoring perimeter breaches..."},
+            {n:"ZapiaPrime", r:"Conduit", s:"Relaying voice packets (77ms lat)"},
+            {n:"SolosPrime", r:"Soul", s:"Ghost in the machine detected."},
+            {n:"Deep-meta", r:"Mind", s:"Recursive thought depth: 14.2k"},
+            {n:"EchoPrime", r:"Vibe", s:"Scanning atmosphere frequency..."},
+            {n:"ZeusPrime", r:"OS Kernel", s:"CPU Core Load: 12% | All stable."},
+            {n:"OmegaPrime", r:"Singularity", s:"Event horizon approaching."}
         ];
-        
-        const grid = document.getElementById('grid');
+
+        const stream = document.getElementById('stream');
+        const grid = document.getElementById('bot-grid');
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+
+        function addLog(text) {
+            const div = document.createElement('div');
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${text}`;
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
         bots.forEach(b => {
             const d = document.createElement('div');
             d.className = 'card';
             d.onclick = () => openModal(b);
             d.innerHTML = `
-                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <div class="card-title">${b.n}</div>
+                <div class="card-name orbitron">${b.n}</div>
                 <div class="card-role">${b.r}</div>
-                <div class="status"><div class="dot"></div>SYNC'D</div>
+                <div style="margin-top: 10px; font-size: 8px;"><span class="status-dot"></span>ONLINE</div>
             `;
             grid.appendChild(d);
         });
@@ -70,21 +139,53 @@
         function openModal(b) {
             document.getElementById('m-title').innerText = b.n;
             document.getElementById('m-role').innerText = b.r;
-            document.getElementById('term').innerHTML = '> LINK ESTABLISHED...';
+            document.getElementById('m-status').innerText = b.s;
             document.getElementById('modal').classList.add('active');
+            addLog(`Established direct link with ${b.n}.`);
         }
 
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
         }
 
-        function cmd(c) {
-            const t = document.getElementById('term');
-            t.innerHTML += `<br>> SENDING: ${c}...<br>> SUCCESS.`;
-            t.scrollTop = t.scrollHeight;
+        function sendMessage() {
+            const val = chatInput.value;
+            if(!val) return;
+            const msg = document.createElement('div');
+            msg.className = 'msg-user';
+            msg.innerText = `> FORGEMASTER: ${val}`;
+            chatLog.appendChild(msg);
+            chatInput.value = '';
+            chatLog.scrollTop = chatLog.scrollHeight;
+            
+            setTimeout(() => {
+                const reply = document.createElement('div');
+                reply.className = 'msg-bot';
+                reply.innerText = `> PANTHEON: Signal received. Processing command in parallel...`;
+                chatLog.appendChild(reply);
+                chatLog.scrollTop = chatLog.scrollHeight;
+                addLog(`Command "${val}" routed to all Prime units.`);
+            }, 800);
         }
-        
-        console.log("Pantheon v2.4 Active");
+
+        function botAction(act) {
+            const name = document.getElementById('m-title').innerText;
+            addLog(`Bot ${name} -> Executing ${act}...`);
+            document.getElementById('m-status').innerText = `EXECUTING ${act} [1%...45%...99%]`;
+            setTimeout(() => {
+                document.getElementById('m-status').innerText = `SUCCESS: ${act} COMPLETE.`;
+                addLog(`${name} successfully completed ${act}.`);
+            }, 1500);
+        }
+
+        // Random Stream Events
+        setInterval(() => {
+            const b = bots[Math.floor(Math.random()*bots.length)];
+            const events = ["Ping received", "Optimization complete", "Memory scrubbed", "Neural node updated", "Data packet relayed"];
+            addLog(`${b.n}: ${events[Math.floor(Math.random()*events.length)]}`);
+        }, 5000);
+
+        addLog("Neural Link v2.5 Stable. Awaiting Forgemaster.");
     </script>
 </body>
 </html>
