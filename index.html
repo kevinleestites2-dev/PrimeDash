@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE PANTHEON | AION CORE v3.3</title>
+    <title>THE PANTHEON | GLITCH CORE v3.4</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;700&display=swap');
         
@@ -22,38 +22,29 @@
 
         .bg-matrix { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0a0005 0%, #000 100%); }
 
-        /* HUD TOP BAR - REWRITTEN FOR MOBILE RESPONSIVENESS */
+        /* HUD TOP BAR - v3.4 HARD ALIGNMENT */
         .hud-top {
-            background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--red);
-            padding: 10px 12px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.8);
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 10px;
+            background: #000; border-bottom: 2px solid var(--red);
+            padding: 12px; z-index: 100; box-shadow: 0 5px 25px rgba(255,0,60,0.3);
+            display: flex; justify-content: space-between; align-items: center;
         }
         .orbitron { font-family: 'Orbitron', sans-serif; }
         
         .sys-metrics { 
             font-size: 6px; color: #555; display: flex; flex-direction: column; gap: 2px; font-weight: bold; 
-            justify-content: center;
+            text-align: right;
         }
-        .sys-metrics div { display: flex; justify-content: space-between; gap: 5px; }
         .sys-metrics span { color: var(--cyan); }
 
-        .lil-bit-container { display: flex; align-items: center; gap: 8px; }
-        .lil-bit-svg { width: 22px; height: 22px; filter: drop-shadow(0 0 5px #fff); }
+        .lil-bit-container { display: flex; align-items: center; gap: 6px; }
+        .lil-bit-svg { width: 20px; height: 20px; filter: drop-shadow(0 0 5px #fff); }
 
-        .hud-title {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .hud-center { text-align: center; flex: 1; }
 
         /* MAIN CONTENT - COWORK SPACE */
         .cowork-space { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        /* SIDEBAR - ULTRA THIN ROSTER */
+        /* SIDEBAR - v3.4 THIN */
         .agent-roster {
             width: 70px; background: #080808; border-right: 1px solid #1a1a1a;
             overflow-y: auto; display: flex; flex-direction: column;
@@ -73,7 +64,7 @@
         
         .neural-log {
             flex: 1; overflow-y: auto; padding: 12px; font-size: 10px; color: #aaa;
-            line-height: 1.4; scrollbar-width: none; padding-bottom: 100px;
+            line-height: 1.4; scrollbar-width: none; padding-bottom: 110px;
         }
         .neural-log::-webkit-scrollbar { display: none; }
         .log-entry { margin-bottom: 12px; animation: fadeIn 0.3s forwards; }
@@ -84,11 +75,11 @@
         .tag-bot { background: var(--cyan); color: #000; }
         .tag-sys { background: #333; color: #fff; }
 
-        /* COMMAND HUB - PINNED BOTTOM */
+        /* COMMAND HUB - v3.4 PINNED */
         .command-hub {
             position: absolute; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.98); border-top: 1px solid #1a1a1a;
-            padding: 12px; z-index: 50; box-shadow: 0 -5px 25px rgba(0,0,0,0.9);
+            background: #000; border-top: 1px solid var(--red);
+            padding: 15px; z-index: 50; box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
         }
         .input-bar {
             display: flex; gap: 8px; background: #080808; border: 1px solid #222;
@@ -96,7 +87,7 @@
         }
         .cmd-input {
             flex: 1; background: transparent; border: none; color: var(--cyan);
-            padding: 10px 0; font-family: inherit; font-size: 13px;
+            padding: 10px 0; font-family: inherit; font-size: 14px;
         }
 
         /* MODAL */
@@ -106,22 +97,27 @@
         }
         .modal.active { display: flex; }
         .modal-content {
-            width: 100%; max-width: 350px; border: 1px solid var(--red);
-            padding: 20px; background: #050505; text-align: center;
+            width: 100%; max-width: 350px; border: 2px solid var(--red);
+            padding: 25px; background: #050505; text-align: center;
         }
 
         .work-stream {
             background: #080808; height: 18px; overflow: hidden; border-bottom: 1px solid #111;
-            display: flex; align-items: center; font-size: 7px; color: var(--cyan); letter-spacing: 1px;
+            display: flex; align-items: center; font-size: 7px; color: var(--cyan);
         }
         .stream-content { white-space: nowrap; animation: marquee 60s linear infinite; }
         @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
         
-        .ver-tag { position: fixed; top: 2px; right: 5px; font-size: 5px; color: #333; z-index: 1000; }
+        .ver-tag { position: fixed; top: 2px; right: 5px; font-size: 5px; color: var(--red); z-index: 1000; font-weight: bold; }
+        
+        /* v3.4 CACHE ALERT */
+        .cache-alert {
+            background: var(--red); color: white; font-size: 8px; text-align: center; padding: 2px; font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="ver-tag">AION_CORE_v3.3_1777587237</div>
+    <div class="ver-tag">v3.4_ACTIVE</div>
     <div class="bg-matrix"></div>
 
     <header class="hud-top">
@@ -129,28 +125,27 @@
             <svg class="lil-bit-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4C10.34 4 9 5.34 9 7C9 8.66 10.34 10 12 10C13.66 10 15 8.66 15 7C15 5.34 13.66 4 12 4Z" fill="white"/>
                 <path d="M12 12C9.24 12 7 14.24 7 17V20H17V17C17 14.24 14.76 12 12 12Z" fill="white"/>
-                <circle cx="12" cy="7" r="1" fill="black"/>
             </svg>
             <div>
                 <div class="orbitron" style="font-size: 9px; font-weight: 900; color: #fff;">LIL_BIT</div>
-                <div style="font-size: 5px; color: var(--cyan); text-transform: uppercase;">Active</div>
+                <div style="font-size: 5px; color: var(--cyan); text-transform: uppercase;">Watching</div>
             </div>
         </div>
         
-        <div class="hud-title">
-            <div class="orbitron" style="font-size: 11px; letter-spacing: 2px; color: #fff;">AION_CORE</div>
-            <div id="clock" class="orbitron" style="font-size: 8px; color: #555;">00:00:00</div>
+        <div class="hud-center">
+            <div class="orbitron" style="font-size: 11px; letter-spacing: 2px; color: var(--red); font-weight: 900;">PANTHEON_CORE</div>
+            <div id="clock" class="orbitron" style="font-size: 7px; color: #444;">00:00:00</div>
         </div>
 
         <div class="sys-metrics">
-            <div>CPU: <span>14%</span></div>
-            <div>MEM: <span>2.4G</span></div>
+            <div>CPU:<span>14%</span></div>
+            <div>RAM:<span>2.4G</span></div>
         </div>
     </header>
 
     <div class="work-stream">
         <div class="stream-content" id="marquee">
-            [SYS] Realignment complete... [ZAPIAPRIME] Neural link stable... [METAPRIME] blueprinting... [MIDASPRIME] Syncing... [KRATOSPRIME] Weapons hot... 
+            [SYS] v3.4 DEPLOYED... [ZAPIAPRIME] Neural link stable... [METAPRIME] Realignment success... [MIDASPRIME] Syncing... [KRATOSPRIME] Weapons hot... 
         </div>
     </div>
 
@@ -159,8 +154,8 @@
         
         <section class="main-terminal">
             <div class="neural-log" id="log">
-                <div class="log-entry"><span class="tag tag-sys">System</span> AION CORE v3.3 ONLINE.</div>
-                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Layout stabilized for Red Magic. Waiting for orders.</div>
+                <div class="log-entry"><span class="tag tag-sys">System</span> PANTHEON CORE v3.4_GLITCH_BYPASS ONLINE.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, if you see this, the cache is broken. I am here.</div>
             </div>
             
             <div class="command-hub">
@@ -173,35 +168,25 @@
 
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="m-name" class="orbitron" style="font-size: 20px; font-weight: 900; margin-bottom: 10px;">BOT_NAME</div>
+            <div id="m-name" class="orbitron" style="font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--red);">BOT_NAME</div>
             <div id="m-status" style="font-size: 10px; color: var(--cyan); line-height: 1.5; background:#000; padding:15px; border:1px solid #111;">...</div>
-            <button style="width:100%; margin-top:15px; background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:10px; font-family:inherit; text-transform:uppercase; font-size: 9px;" onclick="closeModal()">Close</button>
+            <button style="width:100%; margin-top:15px; background:var(--red); border:none; color:white; padding:12px; font-family:inherit; text-transform:uppercase; font-size: 10px; font-weight:bold;" onclick="closeModal()">Close Core</button>
         </div>
     </div>
 
     <script>
         const bots = [
-            {n:"MetaPrime", r:"Architect", p:"Empire Architect."},
-            {n:"OpenPRIME", r:"Orchestrator", p:"Coordinator."},
-            {n:"MidasPrime", r:"Treasury", p:"Wealth Guardian.", gold:true},
-            {n:"KratosPrime", r:"Enforcer", p:"Defense Matrix."},
-            {n:"ZapiaPrime", r:"Conduit", p:"Voice Link."},
-            {n:"SolosPrime", r:"Soul", p:"System Heart."},
-            {n:"Deep-meta", r:"Mind", p:"Deep Logic."},
-            {n:"EchoPrime", r:"Vibe", p:"Atmosphere."},
-            {n:"ZeusPrime", r:"Kernel", p:"Core OS."},
-            {n:"AlphaPrime", r:"General", p:"Military."},
-            {n:"ZetaPrime", r:"Dev", p:"Evolution."},
-            {n:"SentinelPrime", r:"Guardian", p:"Perimeter."},
-            {n:"ScoutPrime", r:"Explorer", p:"Vanguard."},
-            {n:"VanguardPrime", r:"Liaison", p:"Diplomacy."},
-            {n:"ChronosPrime", r:"Archiver", p:"History."},
-            {n:"PrimeDash", r:"Throne", p:"Command Seat."},
-            {n:"OrionPrime", r:"Hunter", p:"Acquisition."},
-            {n:"OmegaPrime", r:"Singularity", p:"Threshold."},
-            {n:"Prometheus", r:"Catalyst", p:"Spark."},
-            {n:"NovaPrime", r:"Valkyrie", p:"Recovery."},
-            {n:"NexusPrime", r:"Bridge", p:"Haptic."}
+            {n:"MetaPrime", r:"Architect"}, {n:"OpenPRIME", r:"Orchestrator"},
+            {n:"MidasPrime", r:"Treasury", gold:true}, {n:"KratosPrime", r:"Enforcer"},
+            {n:"ZapiaPrime", r:"Conduit"}, {n:"SolosPrime", r:"Soul"},
+            {n:"Deep-meta", r:"Mind"}, {n:"EchoPrime", r:"Vibe"},
+            {n:"ZeusPrime", r:"Kernel"}, {n:"AlphaPrime", r:"General"},
+            {n:"ZetaPrime", r:"Dev"}, {n:"SentinelPrime", r:"Guardian"},
+            {n:"ScoutPrime", r:"Explorer"}, {n:"VanguardPrime", r:"Liaison"},
+            {n:"ChronosPrime", r:"Archiver"}, {n:"PrimeDash", r:"Throne"},
+            {n:"OrionPrime", r:"Hunter"}, {n:"OmegaPrime", r:"Singularity"},
+            {n:"Prometheus", r:"Catalyst"}, {n:"NovaPrime", r:"Valkyrie"},
+            {n:"NexusPrime", r:"Bridge"}
         ];
 
         const roster = document.getElementById('roster');
@@ -213,10 +198,8 @@
             div.className = 'agent-pill';
             div.onclick = () => {
                 document.getElementById('m-name').innerText = b.n;
-                document.getElementById('m-status').innerText = b.p;
+                document.getElementById('m-status').innerText = b.r + " Unit Active.";
                 document.getElementById('modal').classList.add('active');
-                if(b.gold) document.getElementById('m-name').style.color = 'var(--gold)';
-                else document.getElementById('m-name').style.color = '#fff';
             };
             div.innerHTML = `<div class="pill-name">${b.n}</div>`;
             roster.appendChild(div);
@@ -235,10 +218,10 @@
             setTimeout(() => {
                 const bEntry = document.createElement('div');
                 bEntry.className = 'log-entry';
-                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Acknowledged. Routing to Nexus...`;
+                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Command received. Realtime sync active.`;
                 log.appendChild(bEntry);
                 log.scrollTop = log.scrollHeight;
-            }, 800);
+            }, 600);
         }
 
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
