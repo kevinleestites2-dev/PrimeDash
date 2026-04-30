@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE PANTHEON | NEXUS CORE v3.5</title>
+    <title>THE PANTHEON | NEXUS v3.6</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap');
         
         :root { 
             --red: #ff003c; --cyan: #00f2ff; --gold: #ffcc00; --dark: #000000; 
-            --bg: #050505; --border: rgba(255, 0, 60, 0.5);
+            --bg: #050505; --border: rgba(255, 0, 60, 0.6);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -22,66 +22,71 @@
 
         .bg-matrix { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0a0005 0%, #000 100%); }
 
-        /* HUD TOP BAR */
+        /* HUD - MORE SUBSTANTIAL */
         .hud-top {
             background: #000; border-bottom: 2px solid var(--red);
-            padding: 10px; z-index: 100;
+            padding: 15px; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,1);
         }
         .orbitron { font-family: 'Orbitron', sans-serif; }
         
-        .sys-metrics { font-size: 6px; color: #555; display: flex; flex-direction: column; gap: 2px; font-weight: bold; text-align: right; }
+        .sys-metrics { font-size: 8px; color: #666; font-weight: bold; text-align: right; line-height: 1.4; }
         .sys-metrics span { color: var(--cyan); }
 
-        .lil-bit-container { display: flex; align-items: center; gap: 5px; }
-        .lil-bit-svg { width: 20px; height: 20px; }
+        .lil-bit-container { display: flex; align-items: center; gap: 8px; }
+        .lil-bit-svg { width: 28px; height: 28px; }
 
         /* MAIN CONTENT */
-        .cowork-space { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .cowork-space { 
+            flex: 1; display: flex; overflow: hidden; 
+            border: 2px solid #111; margin: 5px; background: rgba(0,0,0,0.5);
+        }
 
-        /* SIDEBAR */
+        /* SIDEBAR - BALANCED */
         .agent-roster {
-            width: 70px; background: #080808; border-right: 1px solid #1a1a1a;
+            width: 90px; background: #050505; border-right: 1px solid #1a1a1a;
             overflow-y: auto; display: flex; flex-direction: column; scrollbar-width: none;
         }
         .agent-roster::-webkit-scrollbar { display: none; }
-        .agent-pill { padding: 10px 2px; border-bottom: 1px solid #111; cursor: pointer; text-align: center; color: #444; }
-        .pill-name { font-size: 7px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .agent-pill { padding: 15px 5px; border-bottom: 1px solid #111; cursor: pointer; text-align: center; color: #555; transition: 0.2s; }
+        .agent-pill:active { color: #fff; background: rgba(255,0,60,0.1); }
+        .pill-name { font-size: 9px; font-weight: 900; letter-spacing: 1px; }
 
-        /* TERMINAL */
-        .main-terminal { flex: 1; display: flex; flex-direction: column; background: #020202; position: relative; }
+        /* TERMINAL - FOCUSED */
+        .main-terminal { flex: 1; display: flex; flex-direction: column; background: #000; position: relative; }
         
         .neural-log {
-            flex: 1; overflow-y: auto; padding: 12px; font-size: 10px; color: #aaa;
-            line-height: 1.4; padding-bottom: 120px; /* EXTRA ROOM FOR COMMAND HUB */
+            flex: 1; overflow-y: auto; padding: 20px; font-size: 12px; color: #ccc;
+            line-height: 1.6; padding-bottom: 120px; 
         }
-        .log-entry { margin-bottom: 10px; }
+        .log-entry { margin-bottom: 15px; border-left: 2px solid #111; padding-left: 10px; }
 
-        .tag { font-weight: bold; padding: 1px 4px; border-radius: 2px; font-size: 7px; margin-right: 6px; text-transform: uppercase; }
+        .tag { font-weight: bold; padding: 2px 6px; border-radius: 2px; font-size: 8px; margin-right: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .tag-fm { background: var(--red); color: #fff; }
         .tag-bot { background: var(--cyan); color: #000; }
-        .tag-sys { background: #333; color: #fff; }
+        .tag-sys { background: #222; color: #888; }
 
-        /* COMMAND HUB - RECOVERY v3.5 */
+        /* COMMAND HUB - COMPACT & CENTERED */
         .command-hub {
             position: absolute; 
-            bottom: 20px; /* RAISED TO BE VISIBLE */
-            left: 10px; 
-            right: 10px;
+            bottom: 30px;
+            left: 15px; 
+            right: 15px;
             z-index: 1000;
-            background: #000;
+            background: rgba(10, 10, 10, 0.95);
             border: 1px solid var(--red);
-            box-shadow: 0 -5px 30px rgba(255,0,60,0.4);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 4px;
+            padding: 12px;
+            box-shadow: 0 0 30px rgba(255,0,60,0.3);
         }
         .input-bar {
-            display: flex; gap: 8px; background: #080808;
-            padding: 5px 12px; border-radius: 4px; border-left: 3px solid var(--red);
+            display: flex; gap: 10px; background: #000;
+            padding: 2px 12px; border-radius: 2px; border-left: 3px solid var(--red);
         }
         .cmd-input {
             flex: 1; background: transparent; border: none; color: var(--cyan);
-            padding: 10px 0; font-family: inherit; font-size: 14px; width: 100%;
+            padding: 12px 0; font-family: inherit; font-size: 15px;
         }
 
         .modal {
@@ -89,35 +94,35 @@
             z-index: 2000; align-items: center; justify-content: center; padding: 20px;
         }
         .modal.active { display: flex; }
-        .modal-content { width: 100%; max-width: 350px; border: 2px solid var(--red); padding: 25px; background: #050505; text-align: center; }
+        .modal-content { width: 100%; max-width: 380px; border: 1px solid var(--red); padding: 30px; background: #050505; text-align: center; }
         
-        .ver-tag { position: fixed; top: 2px; right: 5px; font-size: 5px; color: var(--red); z-index: 1000; font-weight: bold; }
+        .ver-tag { position: fixed; top: 2px; right: 5px; font-size: 6px; color: #222; z-index: 1000; }
     </style>
 </head>
 <body>
-    <div class="ver-tag">v3.5_RECOVERY</div>
+    <div class="ver-tag">v3.6_STABILIZED</div>
     <div class="bg-matrix"></div>
 
     <header class="hud-top">
         <div class="lil-bit-container">
             <svg class="lil-bit-svg" viewBox="0 0 24 24" fill="none"><path d="M12 4C10.34 4 9 5.34 9 7C9 8.66 10.34 10 12 10C13.66 10 15 8.66 15 7C15 5.34 13.66 4 12 4Z" fill="white"/><path d="M12 12C9.24 12 7 14.24 7 17V20H17V17C17 14.24 14.76 12 12 12Z" fill="white"/></svg>
-            <div><div class="orbitron" style="font-size: 9px; font-weight: 900;">LIL_BIT</div></div>
+            <div><div class="orbitron" style="font-size: 11px; font-weight: 900;">LIL_BIT</div><div style="font-size: 6px; color: var(--cyan);">WATCHING</div></div>
         </div>
-        <div style="text-align: center;"><div class="orbitron" style="font-size: 11px; letter-spacing: 2px; color: var(--red);">PANTHEON_CORE</div></div>
-        <div class="sys-metrics"><div>CPU:<span>14%</span></div><div>RAM:<span>2.4G</span></div></div>
+        <div style="text-align: center;"><div class="orbitron" style="font-size: 13px; letter-spacing: 3px; color: var(--red); font-weight: 900;">AION_CORE</div><div id="clock" style="font-size: 8px; color: #444;">00:00</div></div>
+        <div class="sys-metrics"><div>CPU: <span>14%</span></div><div>MEM: <span>2.4G</span></div></div>
     </header>
 
     <main class="cowork-space">
         <aside class="agent-roster" id="roster"></aside>
         <section class="main-terminal">
             <div class="neural-log" id="log">
-                <div class="log-entry"><span class="tag tag-sys">System</span> EMERGENCY RECOVERY v3.5.</div>
-                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, the command bar was being hidden by the OS navigation. I have raised it and added a high-vis border.</div>
+                <div class="log-entry"><span class="tag tag-sys">System</span> AION CORE v3.6 STABILIZED.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Layout re-centered. Content scaling optimized for Red Magic.</div>
             </div>
             
             <div class="command-hub">
                 <div class="input-bar">
-                    <input type="text" class="cmd-input" id="input" placeholder="INPUT COMMAND..." onkeydown="if(event.key==='Enter') send()">
+                    <input type="text" class="cmd-input" id="input" placeholder="READY FOR INPUT..." onkeydown="if(event.key==='Enter') send()">
                 </div>
             </div>
         </section>
@@ -125,8 +130,8 @@
 
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="m-name" class="orbitron" style="font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--red);">BOT_NAME</div>
-            <button style="width:100%; margin-top:15px; background:var(--red); border:none; color:white; padding:12px; font-size: 10px; font-weight:bold;" onclick="closeModal()">CLOSE</button>
+            <div id="m-name" class="orbitron" style="font-size: 24px; font-weight: 900; margin-bottom: 15px; color: var(--red);">BOT_NAME</div>
+            <button style="width:100%; margin-top:20px; background:transparent; border:1px solid var(--red); color:var(--red); padding:15px; font-size: 11px; font-family:inherit; font-weight:bold;" onclick="closeModal()">DISCONNECT</button>
         </div>
     </div>
 
@@ -160,13 +165,14 @@
             setTimeout(() => {
                 const bEntry = document.createElement('div');
                 bEntry.className = 'log-entry';
-                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Command recognized. Nexus sync complete.`;
+                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Signal processed. Nexus is stable.`;
                 log.appendChild(bEntry);
                 log.scrollTop = log.scrollHeight;
             }, 600);
         }
 
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
     </script>
 </body>
 </html>
