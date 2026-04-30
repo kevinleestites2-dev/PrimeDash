@@ -3,86 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE PANTHEON | CORE v4.0</title>
+    <title>THE PANTHEON | AION v4.2</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Fira+Code:wght@400;700&display=swap');
         
-        :root { --red: #ff003c; --cyan: #00f2ff; --dark: #000; }
+        :root { 
+            --red: #ff003c; --cyan: #00f2ff; --dark: #000; 
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
-        body { 
-            background: var(--dark); color: #fff; font-family: 'Fira Code', monospace; 
-            margin: 0; padding: 0; overflow: hidden; height: 100vh; 
-            display: flex; flex-direction: column;
+        html, body { 
+            height: 100%; width: 100%; margin: 0; padding: 0; 
+            background: var(--dark); color: #fff; font-family: 'Fira Code', monospace;
+            overflow: hidden;
         }
 
-        /* HUD - ULTRA SLIM v4.0 */
+        body { display: flex; flex-direction: column; }
+
+        /* HUD */
         .hud-top {
-            height: 40px; background: #000; border-bottom: 1px solid #222;
-            padding: 0 10px; display: flex; justify-content: space-between; align-items: center;
+            flex: 0 0 50px; background: #000; border-bottom: 2px solid var(--red);
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
         }
         .orbitron { font-family: 'Orbitron', sans-serif; }
 
-        /* WORKSPACE - CALCULATED HEIGHT */
+        /* WORKSPACE */
         .cowork-space { 
-            height: calc(100vh - 120px); /* 40 HUD + 80 CHAT */
-            display: flex; overflow: hidden; 
+            flex: 1; display: flex; overflow: hidden; 
         }
 
+        /* SIDEBAR */
         .agent-roster {
-            width: 70px; background: #050505; border-right: 1px solid #111;
+            width: 80px; background: #050505; border-right: 1px solid #111;
             overflow-y: auto; display: flex; flex-direction: column; scrollbar-width: none;
         }
-        .agent-pill { padding: 12px 2px; border-bottom: 1px solid #111; text-align: center; color: #444; font-size: 7px; font-weight: 900; }
+        .agent-pill { padding: 15px 5px; border-bottom: 1px solid #111; text-align: center; color: #444; font-size: 8px; font-weight: 900; cursor: pointer; }
+        .agent-pill:active { color: var(--red); }
 
-        .main-terminal { flex: 1; display: flex; flex-direction: column; background: #020202; overflow: hidden; }
-        .neural-log { flex: 1; overflow-y: auto; padding: 12px; font-size: 11px; color: #bbb; line-height: 1.4; }
-        .log-entry { margin-bottom: 12px; }
-        .tag { font-weight: bold; padding: 2px 5px; border-radius: 2px; font-size: 7px; margin-right: 7px; text-transform: uppercase; }
+        /* TERMINAL */
+        .main-terminal { flex: 1; display: flex; flex-direction: column; background: #020202; overflow: hidden; position: relative; }
+        
+        /* LOG CONTAINER - PREVENTS STRETCHING */
+        .neural-log { 
+            flex: 1; overflow-y: auto; padding: 20px 10% 100px 10%; /* SIDE PADDING TO PREVENT STRETCH */
+            font-size: 11px; color: #bbb; line-height: 1.6;
+        }
+        .log-entry { margin-bottom: 20px; border-left: 1px solid #222; padding-left: 15px; }
+        
+        .tag { font-weight: bold; padding: 2px 6px; border-radius: 2px; font-size: 8px; margin-right: 10px; text-transform: uppercase; }
         .tag-fm { background: var(--red); color: #fff; }
         .tag-bot { background: var(--cyan); color: #000; }
 
-        /* COMMAND HUB - ABSOLUTE POSITIONED */
+        /* COMMAND HUB - INTEGRATED FLEX v4.2 */
         .command-hub {
-            height: 80px; background: #000; border-top: 1px solid var(--red);
-            padding: 10px 15px; display: flex; align-items: center;
-            position: relative; z-index: 100;
+            flex: 0 0 auto; background: #000; border-top: 2px solid var(--red);
+            padding: 15px 15px calc(15px + var(--safe-bottom)); 
+            z-index: 1000;
         }
         .input-bar {
-            width: 100%; display: flex; gap: 10px; background: #0a0a0a;
-            padding: 0 10px; border-radius: 4px; border: 1px solid #333;
-            align-items: center; height: 50px;
+            display: flex; gap: 10px; background: #0a0a0a;
+            padding: 5px 15px; border-radius: 4px; border: 1px solid #222;
+            align-items: center;
         }
         .cmd-input {
             flex: 1; background: transparent; border: none; color: var(--cyan);
-            padding: 10px 0; font-family: inherit; font-size: 16px;
+            padding: 12px 0; font-family: inherit; font-size: 16px;
         }
         .send-btn {
             background: var(--red); color: white; border: none; border-radius: 3px;
-            padding: 8px 15px; font-family: 'Orbitron', sans-serif; font-size: 10px;
+            padding: 10px 20px; font-family: 'Orbitron', sans-serif; font-size: 11px;
             font-weight: 900; cursor: pointer;
         }
+        
+        .ver-tag { position: fixed; top: 2px; left: 5px; font-size: 6px; color: #333; z-index: 200; }
     </style>
 </head>
 <body>
+    <div class="ver-tag">v4.2_STABILIZED</div>
     <header class="hud-top">
-        <div class="orbitron" style="font-size: 9px; color: #555;">LIL_BIT</div>
-        <div class="orbitron" style="font-size: 10px; letter-spacing: 2px; color: var(--red); font-weight: 900;">AION_CORE_v4.0</div>
-        <div style="font-size: 7px; color: #333;">ONLINE</div>
+        <div class="orbitron" style="font-size: 11px; font-weight: 900;">LIL_BIT</div>
+        <div class="orbitron" style="font-size: 12px; letter-spacing: 3px; color: var(--red); font-weight: 900;">AION_CORE_v4.2</div>
+        <div style="font-size: 8px; color: #444;">SYNCED</div>
     </header>
 
     <main class="cowork-space">
         <aside class="agent-roster" id="roster"></aside>
         <section class="main-terminal">
             <div class="neural-log" id="log">
-                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, v4.0 deployed. Entire layout reconstructed with static heights to bypass the browser ghosting.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, v4.2 online. Flex-container lock engaged. The chat is now physically part of the screen geometry.</div>
             </div>
         </section>
     </main>
 
     <div class="command-hub">
         <div class="input-bar">
-            <input type="text" class="cmd-input" id="input" placeholder="COMMAND..." onkeydown="if(event.key==='Enter') send()">
+            <input type="text" class="cmd-input" id="input" placeholder="COMMAND THE LEGION..." onkeydown="if(event.key==='Enter') send()">
             <button class="send-btn" onclick="send()">SEND</button>
         </div>
     </div>
