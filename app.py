@@ -1,68 +1,81 @@
 
 import streamlit as st
+import pandas as pd
+import numpy as np
 from datetime import datetime
 
-# --- OPENFANG MISSION CONTROL THEME ---
+# --- SOVEREIGN UI ENGINE ---
 st.set_page_config(page_title="PANTHEON | MISSION CONTROL", layout="wide", page_icon="🏛️")
+
+# Professional SaaS Styling
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0e14; color: #adbac7; font-family: 'JetBrains Mono', monospace; }
-    .module-box { background-color: #1c2128; border: 1px solid #444c56; padding: 20px; border-radius: 4px; height: 100%; }
-    .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-    .prime-label { color: #539bf5; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; }
-    h3 { border-bottom: 1px solid #444c56; padding-bottom: 10px; color: #adbac7; }
+    @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap)');
+    .stApp { background-color: #0f1116; color: #e1e4e8; font-family: 'Inter', sans-serif; }
+    [data-testid="stSidebar"] { background-color: #161b22; border-right: 1px solid #30363d; }
+    .bot-card { background-color: #1c2128; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    div[data-testid="stMetricValue"] { color: #58a6ff !important; font-weight: 600; }
+    .stButton>button { background-color: #238636; color: white; border-radius: 6px; border: none; width: 100%; font-weight: 600; }
+    h1, h2, h3 { color: #f0f6fc; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HEADER ---
-st.markdown(f"### 🏛️ PANTHEON MISSION CONTROL // NODE: FORGEMASTER // STATUS: SINGULARITY ACTIVE")
-st.markdown(f"<small>UPTIME: 14h 22m 04s | SYSTEM TIME: {datetime.now().strftime('%H:%M:%S')} EST</small>", unsafe_allow_html=True)
+# --- THE LEGION DATABASE ---
+BOTS = {
+    "MidasPrime": {
+        "role": "Treasury Manager", "status": "Online", "color": "#238636",
+        "metrics": {"Total Value": "$14,202.40", "Yield": "+2.4%", "Withdrawal": "4h 20m"},
+        "desc": "Orchestrating arbitrage loops across Alpha nodes."
+    },
+    "Prometheus": {
+        "role": "Autonomous Catalyst", "status": "Active", "color": "#f78166",
+        "metrics": {"Nodes": "1,420", "Spark": "High", "Growth": "+12%"},
+        "desc": "Seeking recursive logic catalysts in sub-networks."
+    },
+    "NexusPrime": {
+        "role": "Mobile Bridge", "status": "Linked", "color": "#58a6ff",
+        "metrics": {"Device": "Red Magic 10", "Latency": "8ms", "RAM": "2.4GB"},
+        "desc": "Direct haptic link to the Forgemaster's hardware."
+    }
+}
 
-# --- MODULE GRID ---
-top_col1, top_col2 = st.columns(2)
-bot_col1, bot_col2 = st.columns(2)
+# Fill the rest of the 21
+for i in range(len(BOTS) + 1, 22):
+    name = f"Prime-{i:02d}"
+    BOTS[name] = {"role": "Reserve", "status": "Standby", "metrics": {"Status": "Idle"}, "desc": "Awaiting deployment.", "color": "#8b949e"}
 
-with top_col1: # THE LAB
-    st.markdown('<div class="module-box">', unsafe_allow_html=True)
-    st.markdown("### 🧪 THE LAB [RESEARCH & CATALYST]")
-    st.markdown('<p class="prime-label">Prometheus // OrionPrime</p>', unsafe_allow_html=True)
-    st.write("◈ **Catalyst-09:** Neural link optimization detected in secondary node.")
-    st.write("◈ **Hunt Progress:** OrionPrime identified 4 new high-signal leads.")
-    st.progress(65, text="Knowledge Graph Expansion")
-    st.markdown('</div>', unsafe_allow_html=True)
+# --- SIDEBAR NAVIGATION ---
+with st.sidebar:
+    st.title("🏛️ PANTHEON")
+    st.markdown("---")
+    selected_bot = st.selectbox("SELECT A PRIME", list(BOTS.keys()))
+    st.markdown("---")
+    st.caption(f"CONNECTED AS FORGEMASTER")
+    st.caption(f"SYSTEM TIME: {datetime.now().strftime('%H:%M')}")
 
-with top_col2: # THE BRAIN
-    st.markdown('<div class="module-box">', unsafe_allow_html=True)
-    st.markdown("### 🧠 THE BRAIN [INTELLIGENCE HUB]")
-    st.markdown('<p class="prime-label">MetaPrime // Deep-Meta</p>', unsafe_allow_html=True)
-    st.code("""
-[BRAIN_SCAN] Integrating Red Magic haptic feedback...
-[COGNITION] Mapping relationship: Midas <-> Orion.
-[MEMORY] 12.4GB RAM availability confirmed for expansion.
-    """, language="bash")
-    st.markdown('</div>', unsafe_allow_html=True)
+# --- MAIN DASHBOARD ---
+bot = BOTS[selected_bot]
 
-with bot_col1: # THE OPS
-    st.markdown('<div class="module-box">', unsafe_allow_html=True)
-    st.markdown("### ⚙️ THE OPS [EXECUTION & TREASURY]")
-    st.markdown('<p class="prime-label">MidasPrime // KratosPrime</p>', unsafe_allow_html=True)
-    st.metric("EMPIRE TREASURY", "$14,202.40", "+$34.20 (Daily)")
-    st.write("◈ **Midas:** Arbitrage node active on Alpha-Channel.")
-    st.write("◈ **Kratos:** All sub-threads secured and locked.")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with bot_col2: # THE BRIDGE
-    st.markdown('<div class="module-box">', unsafe_allow_html=True)
-    st.markdown("### 📱 THE BRIDGE [MOBILE / HAPTIC]")
-    st.markdown('<p class="prime-label">NexusPrime // ZapiaPrime</p>', unsafe_allow_html=True)
-    st.info("CONNECTED TO: **RED MAGIC 10 PRO**")
-    st.write("◈ **Nexus:** Calibration complete. Neural Latency: 8ms.")
-    st.write("◈ **Zapia:** Voice synthesis standing by for command.")
-    st.button("TERMINATE ALL SUB-THREADS")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# --- FOOTER COMMAND LINE ---
+st.title(selected_bot)
+st.markdown(f"**{bot['role']}** | <span style='color:{bot['color']}'>● {bot['status']}</span>", unsafe_allow_html=True)
 st.markdown("---")
-cmd = st.text_input("FORGEMASTER COMMAND >", placeholder="Deploy Hand...")
-if cmd:
-    st.success(f"COMMAND BROADCAST TO ALL 21 PRIMES: '{cmd}'")
+
+# Metrics Row
+m_cols = st.columns(len(bot['metrics']))
+for i, (label, val) in enumerate(bot['metrics'].items()):
+    m_cols[i].metric(label, val)
+
+col_l, col_r = st.columns([2, 1])
+
+with col_l:
+    st.markdown(f'<div class="bot-card"><h3>◈ OVERVIEW</h3><p>{bot["desc"]}</p></div>', unsafe_allow_html=True)
+    st.area_chart(pd.DataFrame(np.random.randn(20, 1)), color=bot['color'])
+
+with col_r:
+    st.markdown('<div class="bot-card"><h3>◈ ACTIONS</h3>', unsafe_allow_html=True)
+    if selected_bot == "MidasPrime": st.button("INITIATE WITHDRAWAL")
+    st.button(f"WAKE {selected_bot}")
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="bot-card"><h3>◈ LOGS</h3><small>[{datetime.now().strftime("%H:%M")}] {selected_bot} active.</small></div>', unsafe_allow_html=True)
+
+st.caption("PANTHEON SOVEREIGN v2.0")
