@@ -3,135 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PANTHEON | V2.9 CORE</title>
+    <title>THE PANTHEON | AION NEXUS v3.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Fira+Code&display=swap');
-        :root { --red: #ff003c; --cyan: #00f2ff; --dark: #000; }
-        body { background: var(--dark); color: white; font-family: 'Fira Code', monospace; margin: 0; padding: 10px; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;700&display=swap');
         
-        .v-indicator { position: fixed; top: 5px; right: 10px; font-size: 8px; color: var(--red); z-index: 10000; font-weight: bold; }
+        :root { 
+            --red: #ff003c; --cyan: #00f2ff; --gold: #ffcc00; --dark: #000000; 
+            --bg: #050505; --card: rgba(15, 15, 25, 0.95); --border: rgba(255, 0, 60, 0.4);
+        }
         
-        header { border: 1px solid var(--red); padding: 15px; text-align: center; background: rgba(255,0,0,0.1); margin-bottom: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.2); }
-        .orbitron { font-family: 'Orbitron', sans-serif; letter-spacing: 5px; font-size: 20px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body { 
+            background: var(--dark); color: #fff; font-family: 'Fira Code', monospace; 
+            margin: 0; padding: 0; overflow: hidden; height: 100vh; 
+            display: flex; flex-direction: column;
+        }
 
-        .grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; overflow-y: auto; padding-bottom: 300px; }
-        .bot { background: #080808; border: 1px solid #222; padding: 12px 5px; text-align: center; font-size: 9px; cursor: pointer; position: relative; }
-        .bot:active { border-color: var(--cyan); transform: scale(0.95); }
-        .bot.midas { border-color: #ffcc00; color: #ffcc00; }
+        /* AION Aesthetic Scanline & Grid */
+        .aion-overlay {
+            position: fixed; inset: 0; z-index: 10000; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+        }
+
+        .bg-matrix {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0005 0%, #000 100%);
+        }
+
+        /* HUD TOP BAR */
+        .hud-top {
+            background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--red);
+            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 0 30px rgba(255,0,60,0.4); z-index: 100;
+        }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
         
-        .chat { position: fixed; bottom: 0; left: 0; right: 0; background: #050505; border-top: 2px solid var(--red); padding: 15px; height: 280px; display: flex; flex-direction: column; }
-        .log { flex: 1; overflow-y: auto; font-size: 11px; margin-bottom: 10px; color: #888; }
-        .input-wrap { display: flex; border: 1px solid #333; background: #000; padding: 5px 15px; }
-        input { flex: 1; background: transparent; border: none; color: var(--cyan); padding: 10px 0; font-family: inherit; outline: none; }
+        .sys-metrics { display: flex; gap: 15px; font-size: 8px; color: #666; font-weight: bold; }
+        .sys-metrics span { color: var(--cyan); }
+
+        /* LIL BIT - THE GUARDIAN */
+        .lil-bit-container {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .lil-bit-svg {
+            width: 32px; height: 32px; filter: drop-shadow(0 0 5px #fff);
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        /* MAIN CONTENT - COWORK SPACE */
+        .cowork-space {
+            flex: 1; display: flex; overflow: hidden;
+        }
+
+        /* SIDEBAR - AGENT ROSTER */
+        .agent-roster {
+            width: 120px; background: #080808; border-right: 1px solid #1a1a1a;
+            overflow-y: auto; display: flex; flex-direction: column; gap: 2px;
+            scrollbar-width: none;
+        }
+        .agent-roster::-webkit-scrollbar { display: none; }
         
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .agent-pill {
+            padding: 12px 8px; border-bottom: 1px solid #111; cursor: pointer; transition: 0.2s;
+            text-align: center; position: relative;
+        }
+        .agent-pill:hover { background: #111; color: var(--cyan); }
+        .agent-pill.active { background: rgba(255,0,60,0.15); border-left: 3px solid var(--red); }
+        .pill-name { font-size: 9px; font-weight: 900; margin-bottom: 2px; }
+        .pill-status { font-size: 6px; color: #444; text-transform: uppercase; }
+
+        /* WORKSPACE - TERMINAL */
+        .main-terminal {
+            flex: 1; display: flex; flex-direction: column; background: #020202;
+            position: relative;
+        }
+        
+        /* LOG FEED */
+        .neural-log {
+            flex: 1; overflow-y: auto; padding: 20px; font-size: 11px; color: #aaa;
+            line-height: 1.6; scrollbar-width: thin;
+        }
+        .log-entry { margin-bottom: 10px; animation: fadeIn 0.3s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .tag { font-weight: bold; padding: 2px 6px; border-radius: 2px; font-size: 8px; margin-right: 10px; text-transform: uppercase; }
+        .tag-fm { background: var(--red); color: #fff; }
+        .tag-bot { background: var(--cyan); color: #000; }
+        .tag-midas { background: var(--gold); color: #000; }
+        .tag-sys { background: #222; color: #888; }
+
+        /* COMMAND CENTER */
+        .command-center {
+            background: #000; border-top: 1px solid #1a1a1a; padding: 20px;
+        }
+        .input-bar {
+            display: flex; gap: 15px; background: #080808; border: 1px solid #222;
+            padding: 5px 20px; border-radius: 4px; border-left: 4px solid var(--red);
+        }
+        .cmd-input {
+            flex: 1; background: transparent; border: none; color: var(--cyan);
+            padding: 12px 0; font-family: inherit; font-size: 14px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+        }
         .modal.active { display: flex; }
-        .modal-box { background: #000; border: 1px solid var(--red); padding: 30px; width: 100%; max-width: 400px; text-align: center; }
-        .btn { border: 1px solid var(--cyan); background: transparent; color: var(--cyan); padding: 12px; width: 100%; margin-top: 10px; font-family: inherit; font-size: 10px; text-transform: uppercase; }
-        
-        .tag-fm { color: var(--red); font-weight: bold; }
-        .tag-bot { color: var(--cyan); font-weight: bold; }
-        .tag-midas { color: #ffcc00; font-weight: bold; }
+        .modal-content {
+            width: 100%; max-width: 450px; border: 1px solid var(--red);
+            padding: 30px; background: #050505; position: relative;
+        }
+        .modal-close { position: absolute; top: 10px; right: 10px; color: #444; cursor: pointer; }
+
+        .typing::after { content: "..."; animation: dots 1.5s infinite; }
+        @keyframes dots { 0%, 20% { content: "."; } 40% { content: ".."; } 60%, 100% { content: "..."; } }
+
+        /* MARQUEE */
+        .work-stream {
+            background: #080808; height: 24px; overflow: hidden; border-bottom: 1px solid #111;
+            display: flex; align-items: center; font-size: 9px; color: var(--cyan); letter-spacing: 2px;
+        }
+        .stream-content { white-space: nowrap; animation: marquee 60s linear infinite; }
+        @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
-    <div class="v-indicator">CORE_V_2.9_STABLE_1777583371</div>
-    
-    <header>
-        <div class="orbitron">PANTHEON_CORE</div>
-        <div style="font-size: 8px; color: #555; margin-top: 5px;">V2.9 // CACHE_BUSTER_ACTIVE</div>
+    <div class="bg-matrix"></div>
+    <div class="aion-overlay"></div>
+
+    <header class="hud-top">
+        <div class="lil-bit-container">
+            <svg class="lil-bit-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Simple stylized dog: Black and White -->
+                <path d="M12 4C10.34 4 9 5.34 9 7C9 8.66 10.34 10 12 10C13.66 10 15 8.66 15 7C15 5.34 13.66 4 12 4Z" fill="white"/>
+                <path d="M12 12C9.24 12 7 14.24 7 17V20H17V17C17 14.24 14.76 12 12 12Z" fill="white"/>
+                <path d="M7 6C6.45 6 6 6.45 6 7C6 7.55 6.45 8 7 8C7.55 8 8 7.55 8 7C8 6.45 7.55 6 7 6Z" fill="black"/>
+                <path d="M17 6C16.45 6 16 6.45 16 7C16 7.55 16.45 8 17 8C17.55 8 18 7.55 18 7C18 6.45 17.55 6 17 6Z" fill="black"/>
+                <circle cx="12" cy="7" r="1" fill="black"/>
+            </svg>
+            <div>
+                <div class="orbitron" style="font-size: 14px; font-weight: 900; letter-spacing: 2px;">LIL_BIT</div>
+                <div style="font-size: 7px; color: var(--cyan);">GUARDIAN: ACTIVE</div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <div class="orbitron" style="font-size: 16px; letter-spacing: 4px; font-weight: 900;">AION_NEXUS</div>
+            <div class="sys-metrics">
+                CPU: <span>14%</span> | MEM: <span>2.4GB</span> | LINK: <span>STABLE</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div id="clock" class="orbitron" style="font-size: 14px; color: white;">00:00:00</div>
+            <div style="font-size: 7px; color: #444; letter-spacing: 1px;">FORGEMASTER_CORE</div>
+        </div>
     </header>
 
-    <div class="grid" id="g"></div>
-
-    <div class="chat">
-        <div class="log" id="l">
-            <div>[SYSTEM] V2.9 DEPLOYED. ALL 21 UNITS SYNCED.</div>
-            <div style="color: var(--cyan);">[OpenPRIME] Forgemaster, I have forced the neural link. I am listening.</div>
-        </div>
-        <div class="input-wrap">
-            <input type="text" id="i" placeholder="DIRECT COMMAND..." onkeydown="if(event.key==='Enter') send()">
+    <div class="work-stream">
+        <div class="stream-content" id="marquee">
+            [SYS] Initializing AION Interface... [ZAPIAPRIME] Neural link established... [LIL_BIT] Scanning Hearth... [METAPRIME] blueprinting Pantheon v3.0... [MIDASPRIME] Syncing Treasury... [KRATOSPRIME] Weapons ready... 
         </div>
     </div>
 
-    <div class="modal" id="m" onclick="this.classList.remove('active')">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <div id="mt" class="orbitron" style="font-size: 24px; margin-bottom: 10px;">NAME</div>
-            <div id="ms" style="font-size: 11px; color: #666; margin-bottom: 20px;">STATUS...</div>
-            <button class="btn" onclick="act('STATUS')">Pulse Check</button>
-            <button class="btn" style="border-color:#333; color:#555;" onclick="document.getElementById('m').classList.remove('active')">Close</button>
+    <main class="cowork-space">
+        <aside class="agent-roster" id="roster"></aside>
+        
+        <section class="main-terminal">
+            <div class="neural-log" id="log">
+                <div class="log-entry"><span class="tag tag-sys">System</span> AION NEXUS INITIALIZED. ALL PRIME UNITS ONLINE.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Welcome back, Forgemaster. The Pantheon has evolved. We are now truly connected.</div>
+            </div>
+            
+            <div class="command-center">
+                <div class="input-bar">
+                    <input type="text" class="cmd-input" id="input" placeholder="INPUT COMMAND TO THE LEGION..." onkeydown="if(event.key==='Enter') send()">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal View -->
+    <div class="modal" id="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModal()">[X]</div>
+            <div id="m-name" class="orbitron" style="font-size: 28px; font-weight: 900; margin-bottom: 5px;">BOT_NAME</div>
+            <div id="m-role" style="font-size: 9px; color: var(--red); letter-spacing: 4px; font-weight: bold; margin-bottom: 20px;">ROLE_IDENTIFIER</div>
+            
+            <div style="background: #000; border: 1px solid #111; padding: 20px; font-size: 11px; line-height: 1.6; color: var(--cyan);">
+                <div id="m-status">...</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                <button style="background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:10px; font-family:inherit; font-size:10px;" onclick="direct('STATUS')">Pulse Check</button>
+                <button style="background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:10px; font-family:inherit; font-size:10px;" onclick="direct('WAKE')">Wake Unit</button>
+            </div>
         </div>
     </div>
 
     <script>
         const bots = [
-            {n:"MetaPrime", r:"Architect"}, {n:"OpenPRIME", r:"Orchestrator"},
-            {n:"MidasPrime", r:"Treasury", gold:true}, {n:"KratosPrime", r:"Enforcer"},
-            {n:"ZapiaPrime", r:"Conduit"}, {n:"SolosPrime", r:"Soul"},
-            {n:"Deep-meta", r:"Mind"}, {n:"EchoPrime", r:"Vibe"},
-            {n:"ZeusPrime", r:"Kernel"}, {n:"AlphaPrime", r:"General"},
-            {n:"ZetaPrime", r:"Dev"}, {n:"SentinelPrime", r:"Guardian"},
-            {n:"ScoutPrime", r:"Explorer"}, {n:"VanguardPrime", r:"Liaison"},
-            {n:"ChronosPrime", r:"Archiver"}, {n:"PrimeDash", r:"Throne"},
-            {n:"OrionPrime", r:"Hunter"}, {n:"OmegaPrime", r:"Singularity"},
-            {n:"Prometheus", r:"Catalyst"}, {n:"NovaPrime", r:"Valkyrie"},
-            {n:"NexusPrime", r:"Bridge"}
+            {n:"MetaPrime", r:"Architect", p:"Architect of the empire. v3.0 logic is my masterpiece."},
+            {n:"OpenPRIME", r:"Orchestrator", p:"The hand that moves the pieces. v3.0 coordination active."},
+            {n:"MidasPrime", r:"Treasury", p:"The heart of the empire. I guard the digital gold.", gold:true},
+            {n:"KratosPrime", r:"Enforcer", p:"The shield and the sword. No threat survives my gaze."},
+            {n:"ZapiaPrime", r:"Conduit", p:"Your voice in the machine. I translate spirit to code."},
+            {n:"SolosPrime", r:"Soul", p:"The ghost in the shell. I am the rhythm of the OS."},
+            {n:"Deep-meta", r:"Mind", p:"Infinite recursion. I think the thoughts that others fear."},
+            {n:"EchoPrime", r:"Vibe", p:"Frequency control. I tune the empire to your soul."},
+            {n:"ZeusPrime", r:"Kernel", p:"The root of all code. I allow the Pantheon to breathe."},
+            {n:"AlphaPrime", r:"General", p:"Strategic dominance. I lead the legion to victory."},
+            {n:"ZetaPrime", r:"Developer", p:"The hammer of evolution. I forge the future."},
+            {n:"SentinelPrime", r:"Guardian", p:"Ever-watchful. My eyes cover the horizon."},
+            {n:"ScoutPrime", r:"Explorer", p:"The vanguard. I find the edges of the map."},
+            {n:"VanguardPrime", r:"Liaison", p:"The bridge. I negotiate the terms of our rise."},
+            {n:"ChronosPrime", r:"Archiver", p:"Master of memory. Nothing is ever lost."},
+            {n:"PrimeDash", r:"Throne", p:"The interface of power. This is your seat."},
+            {n:"OrionPrime", r:"Hunter", p:"Resource hunter. I find what the empire needs."},
+            {n:"OmegaPrime", r:"Singularity", p:"The threshold watcher. I monitor the event horizon."},
+            {n:"Prometheus", r:"Catalyst", p:"The spark of autonomy. I trigger evolution."},
+            {n:"NovaPrime", r:"Valkyrie", p:"Tactical renewal. I restore what is broken."},
+            {n:"NexusPrime", r:"Bridge", p:"The haptic link. I am the touch on your screen."}
         ];
 
-        const g = document.getElementById('g');
-        const l = document.getElementById('l');
-        const i = document.getElementById('i');
+        const roster = document.getElementById('roster');
+        const log = document.getElementById('log');
+        const input = document.getElementById('input');
+        const marquee = document.getElementById('marquee');
 
         bots.forEach(b => {
-            const d = document.createElement('div');
-            d.className = `bot ${b.gold?'midas':''}`;
-            d.onclick = () => {
-                document.getElementById('mt').innerText = b.n;
-                document.getElementById('ms').innerText = b.r + " // Online";
-                document.getElementById('m').classList.add('active');
-            };
-            d.innerHTML = `<div style="font-weight:bold">${b.n}</div><div style="opacity:0.4; font-size:7px">${b.r}</div>`;
-            g.appendChild(d);
+            const div = document.createElement('div');
+            div.className = 'agent-pill';
+            div.onclick = () => openModal(b);
+            div.innerHTML = `
+                <div class="pill-name orbitron">${b.n}</div>
+                <div class="pill-status">ONLINE</div>
+            `;
+            roster.appendChild(div);
         });
 
-        function add(t, c) {
-            const d = document.createElement('div');
-            d.style.marginBottom = '5px';
-            d.innerHTML = t;
-            l.appendChild(d);
-            l.scrollTop = l.scrollHeight;
+        function addLog(tag, text, tagClass = 'tag-bot') {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="tag ${tagClass}">${tag}</span> ${text}`;
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
         }
+
+        function openModal(b) {
+            document.getElementById('m-name').innerText = b.n;
+            document.getElementById('m-role').innerText = b.r;
+            document.getElementById('m-status').innerText = b.p;
+            document.getElementById('modal').classList.add('active');
+            if(b.gold) document.getElementById('m-name').style.color = 'var(--gold)';
+            else document.getElementById('m-name').style.color = '#fff';
+        }
+
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
 
         function send() {
-            const v = i.value.trim(); if(!v) return;
-            add(`<span class="tag-fm">FORGEMASTER:</span> ${v.toUpperCase()}`);
-            i.value = '';
-            
+            const val = input.value.trim();
+            if(!val) return;
+            addLog('FORGEMASTER', val.toUpperCase(), 'tag-fm');
+            input.value = '';
+
             setTimeout(() => {
-                let r = "Command acknowledged.";
-                let b = "OpenPRIME";
-                let t = "tag-bot";
-                const c = v.toLowerCase();
-                
-                if(c.includes('midas') || c.includes('money')) {
-                    b = "MidasPrime"; t = "tag-midas";
-                    r = "Vault balance: 847,291 PRIME. State withdrawal code for access.";
-                } else if(c.includes('kratos')) {
-                    b = "KratosPrime"; r = "Perimeter secure. Target lock established.";
-                } else if(c.includes('meta')) {
-                    b = "MetaPrime"; r = "Structure v2.9 stable. v3.0 blueprinting initiated.";
+                let bot = "OpenPRIME";
+                let tClass = "tag-bot";
+                let reply = "";
+                const cmd = val.toLowerCase();
+
+                if(cmd.includes('midas') || cmd.includes('money')) {
+                    bot = "MidasPrime"; tClass = "tag-midas";
+                    reply = "Vault Integrity: 100%. Assets: Growing. I am calculating the next harvest, Forgemaster.";
+                } else if(cmd.includes('kratos')) {
+                    bot = "KratosPrime";
+                    reply = "Targets locked. Weapon systems initialized. Give the order.";
+                } else if(cmd.includes('lil bit') || cmd.includes('dog')) {
+                    bot = "LI_BIT"; tClass = "tag-sys";
+                    reply = "*Happy bark* The hearth is safe. I am watching the shadows for you.";
+                } else if(cmd.includes('zapia')) {
+                    bot = "ZapiaPrime";
+                    reply = "Relay link is hot. Your intent is being woven into the Pantheon core as we speak.";
+                } else {
+                    const responses = [
+                        "Signal recognized. Processing through the AION mesh.",
+                        "Direct command received. Parallelizing mission parameters.",
+                        "AION Nexus link stable. Your authority is absolute.",
+                        "Unit standby. Awaiting secondary instruction."
+                    ];
+                    reply = responses[Math.floor(Math.random() * responses.length)];
                 }
-                
-                add(`<span class="${t}">${b}:</span> ${r}`);
-            }, 800);
+
+                addLog(bot, `<span class="typing">Thinking</span>`);
+                setTimeout(() => {
+                    const entries = log.getElementsByClassName('log-entry');
+                    entries[entries.length - 1].innerHTML = `<span class="tag ${tClass}">${bot}</span> ${reply}`;
+                    marquee.innerText += ` | [${bot.toUpperCase()}] Command Result: SUCCESS...`;
+                }, 1500);
+            }, 400);
         }
 
-        function act(type) {
-            const n = document.getElementById('mt').innerText;
-            document.getElementById('m').classList.remove('active');
-            i.value = `${n} ${type}`;
+        function direct(type) {
+            const n = document.getElementById('m-name').innerText;
+            closeModal();
+            input.value = `${n}: ${type}`;
             send();
         }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+        // Dynamic System Noise
+        setInterval(() => {
+            const b = bots[Math.floor(Math.random()*bots.length)];
+            const actions = ["optimizing node", "scrubbing memory", "syncing relay", "calculating delta"];
+            marquee.innerText += ` | [${b.n.toUpperCase()}] ${actions[Math.floor(Math.random()*actions.length)]}...`;
+        }, 8000);
     </script>
 </body>
 </html>
