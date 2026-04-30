@@ -3,292 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE PANTHEON | Neural Workstation</title>
+    <title>THE PANTHEON | The Nexus Workstation</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;700&display=swap');
         
         :root { 
-            --red: #ff003c; 
-            --cyan: #00f2ff; 
-            --gold: #ffcc00;
-            --dark: #000000; 
-            --glass: rgba(10, 15, 20, 0.98);
-            --border: rgba(255, 0, 60, 0.4);
+            --red: #ff003c; --cyan: #00f2ff; --gold: #ffcc00; --dark: #000000; 
+            --glass: rgba(12, 12, 18, 0.98); --border: rgba(255, 0, 60, 0.5);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body { 
-            background: var(--dark); 
-            color: #fff; 
-            font-family: 'Fira Code', monospace; 
-            margin: 0; padding: 0; 
-            overflow: hidden; 
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: var(--dark); color: #fff; font-family: 'Fira Code', monospace; 
+            margin: 0; padding: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column;
         }
 
-        /* 3D Grid Floor */
-        .perspective-container {
+        /* 3D Neural Mesh Background */
+        .nexus-mesh {
             position: fixed; inset: 0; z-index: -1;
-            perspective: 1000px;
+            background: radial-gradient(circle at 50% 50%, #1a0005 0%, #000 100%);
             overflow: hidden;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
-        .grid-floor {
-            position: absolute; width: 200%; height: 200%;
-            top: -50%; left: -50%;
-            background-image: 
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 60px 60px;
-            transform: rotateX(60deg);
-            opacity: 0.1;
-            animation: gridMove 30s linear infinite;
+        .grid-plane {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 80px 80px; transform: rotateX(70deg) translateZ(-100px);
+            opacity: 0.15; animation: gridMove 20s linear infinite;
         }
-        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 600px; } }
+        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 800px; } }
 
         .scanline {
-            width: 100%; height: 5px; z-index: 1000;
-            background: rgba(255,255,255,0.05);
-            position: fixed; top: 0;
-            animation: scanline 4s linear infinite;
-            pointer-events: none;
+            width: 100%; height: 2px; z-index: 1000; background: rgba(0, 242, 255, 0.1);
+            position: fixed; top: 0; animation: scanline 6s linear infinite; pointer-events: none;
         }
         @keyframes scanline { 0% { top: 0%; } 100% { top: 100%; } }
 
-        /* Header / HUD */
-        .hud-header {
-            background: rgba(0,0,0,0.95);
-            border-bottom: 1px solid var(--red);
-            padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative;
+        /* HUD Header */
+        .hud-nav {
+            background: rgba(0,0,0,0.9); border-bottom: 2px solid var(--red);
+            padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 0 25px rgba(255,0,60,0.3); z-index: 50;
         }
-        .hud-header::after {
-            content: ""; position: absolute; bottom: -2px; left: 0; width: 100%; height: 1px;
-            background: var(--red); box-shadow: 0 0 15px var(--red);
-        }
-        
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glitch-text { animation: glitch 3s infinite; }
-        @keyframes glitch {
-            0%, 90%, 100% { transform: skew(0); }
-            91% { transform: skew(10deg); }
-            92% { transform: skew(-10deg); }
-        }
+        
+        .sys-info { display: flex; gap: 20px; font-size: 8px; color: #555; text-transform: uppercase; font-weight: bold; }
+        .sys-info span { color: var(--cyan); }
 
-        /* Neural Stream - Fast Marquee */
-        .marquee-bar {
-            background: #080808;
-            height: 24px; overflow: hidden;
-            border-bottom: 1px solid #111;
-            display: flex; align-items: center;
-            font-size: 9px; color: var(--cyan);
-            text-transform: uppercase; letter-spacing: 2px;
+        /* Neural Feed */
+        .neural-feed {
+            background: #050505; height: 26px; overflow: hidden; border-bottom: 1px solid #111;
+            display: flex; align-items: center; font-size: 9px; color: var(--cyan);
+            letter-spacing: 2px; font-weight: bold;
         }
-        .marquee-content { white-space: nowrap; animation: marquee 40s linear infinite; }
+        .feed-content { white-space: nowrap; animation: marquee 50s linear infinite; }
         @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        /* Bot Grid */
+        /* The Grid */
         .workspace {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-            gap: 12px;
-            padding-bottom: 300px;
+            flex: 1; overflow-y: auto; padding: 15px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 10px; padding-bottom: 320px;
         }
 
-        .bot-card {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 15px 10px;
-            text-align: center;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        .prime-module {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 8px; text-align: center; position: relative; cursor: pointer; transition: 0.1s;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
-        .bot-card:hover { border-color: var(--cyan); box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.1); }
-        .bot-card:active { transform: scale(0.92); }
+        .prime-module:hover { border-color: var(--cyan); background: rgba(0, 242, 255, 0.05); }
+        .prime-module:active { transform: scale(0.9); }
         
-        .bot-card.gold-status { border-color: var(--gold); }
-        .bot-card.gold-status .bot-name { color: var(--gold); text-shadow: 0 0 8px rgba(255,204,0,0.4); }
+        .gold-glow { border-color: var(--gold) !important; box-shadow: 0 0 10px rgba(255,204,0,0.2); }
+        .gold-glow .b-name { color: var(--gold) !important; text-shadow: 0 0 5px var(--gold); }
 
-        .bot-name { font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 4px; }
-        .bot-role { font-size: 7px; color: #555; text-transform: uppercase; font-weight: bold; }
-        .pulse-line { width: 100%; height: 1px; background: #111; margin-top: 12px; position: relative; overflow: hidden; }
-        .pulse-active { position: absolute; top: 0; left: 0; height: 100%; background: var(--cyan); width: 40%; animation: pulseMove 2s infinite linear; }
-        @keyframes pulseMove { from { left: -40%; } to { left: 100%; } }
+        .b-name { font-size: 9px; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 3px; }
+        .b-role { font-size: 6px; color: #444; text-transform: uppercase; font-weight: bold; }
+        .b-load { width: 100%; height: 1px; background: #111; margin-top: 10px; position: relative; overflow: hidden; }
+        .load-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--cyan); width: 0%; transition: width 1s; }
 
-        /* Command Central */
-        .command-hub {
+        /* Nexus Command Hub */
+        .nexus-hub {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: #020202;
-            border-top: 1px solid var(--red);
-            padding: 15px;
-            z-index: 100;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+            background: #000; border-top: 2px solid var(--red); padding: 20px; z-index: 100;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.9);
         }
         .terminal-display {
-            height: 180px; overflow-y: auto;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid #0a0a0a;
-            padding: 12px;
-            font-size: 11px;
-            line-height: 1.5;
-            color: #888;
-            margin-bottom: 12px;
-            scrollbar-width: none;
+            height: 160px; overflow-y: auto; background: rgba(5,5,5,0.9);
+            border: 1px solid #111; padding: 15px; font-size: 11px; color: #999;
+            margin-bottom: 15px; scrollbar-width: none;
         }
         .terminal-display::-webkit-scrollbar { display: none; }
         
-        .input-bar {
-            display: flex; gap: 10px;
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            padding: 5px 15px;
-            border-radius: 4px;
+        .input-box {
+            display: flex; gap: 12px; background: #080808; border: 1px solid #151515;
+            padding: 8px 18px; border-radius: 4px; border-left: 4px solid var(--red);
         }
-        .input-bar:focus-within { border-color: var(--red); }
-        .terminal-input {
-            flex: 1; background: transparent; border: none;
-            color: var(--cyan); padding: 12px 0;
-            font-family: inherit; font-size: 13px;
+        .input-box:focus-within { border-color: var(--cyan); }
+        .nexus-input {
+            flex: 1; background: transparent; border: none; color: var(--cyan);
+            padding: 10px 0; font-family: inherit; font-size: 14px;
         }
 
-        /* Bot Interaction Overlays */
-        .msg-entry { margin-bottom: 8px; opacity: 0; animation: msgIn 0.3s forwards; }
-        @keyframes msgIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* UI Message Styling */
+        .msg-line { margin-bottom: 8px; animation: slideIn 0.2s forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
         
-        .bot-tag { font-weight: bold; padding: 1px 5px; border-radius: 2px; margin-right: 8px; font-size: 9px; }
-        .tag-sys { background: #333; color: #fff; }
-        .tag-user { background: var(--red); color: #fff; }
-        .tag-prime { background: var(--cyan); color: #000; }
+        .tag { font-weight: bold; padding: 2px 6px; border-radius: 2px; font-size: 8px; margin-right: 10px; text-transform: uppercase; }
+        .tag-fm { background: var(--red); color: #fff; }
+        .tag-bot { background: var(--cyan); color: #000; }
         .tag-midas { background: var(--gold); color: #000; }
+        .tag-sys { background: #222; color: #888; }
 
-        .typing-dots::after { content: "..."; animation: dots 1.5s infinite; }
-        @keyframes dots { 0%, 20% { content: "."; } 40% { content: ".."; } 60%, 100% { content: "..."; } }
-
-        /* Modal / Action View */
+        /* Modal View */
         .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.98);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
             z-index: 2000; align-items: center; justify-content: center; padding: 20px;
         }
         .modal.active { display: flex; }
         .modal-content {
-            width: 100%; max-width: 450px;
-            border: 1px solid var(--red);
-            padding: 35px; background: #050505;
-            position: relative;
+            width: 100%; max-width: 450px; border: 1px solid var(--red);
+            padding: 30px; background: #050505; position: relative; box-shadow: 0 0 50px rgba(255,0,60,0.2);
         }
-        .modal-header { border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 20px; }
-        .action-row { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-prime {
-            background: transparent; border: 1px solid var(--cyan);
-            color: var(--cyan); padding: 14px; font-family: inherit;
-            font-size: 10px; font-weight: bold; text-transform: uppercase;
-            cursor: pointer; transition: 0.2s;
+        .modal-id { position: absolute; top: -10px; right: 20px; background: var(--red); color: #fff; font-size: 8px; padding: 2px 10px; }
+
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-nexus {
+            background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
+            padding: 15px; font-family: inherit; font-size: 10px; font-weight: bold;
+            text-transform: uppercase; cursor: pointer; transition: 0.2s;
         }
-        .btn-prime:active { background: var(--cyan); color: #000; }
+        .btn-nexus:active { background: var(--cyan); color: #000; }
+
+        .thinking::after { content: "..."; animation: dots 1s infinite; }
+        @keyframes dots { 0% { content: "."; } 33% { content: ".."; } 66% { content: "..."; } }
     </style>
 </head>
 <body>
-    <div class="perspective-container"><div class="grid-floor"></div></div>
+    <div class="nexus-mesh"><div class="grid-plane"></div></div>
     <div class="scanline"></div>
 
-    <header class="hud-header">
+    <header class="hud-nav">
         <div>
-            <div class="orbitron glitch-text" style="font-size: 16px; letter-spacing: 4px;">PANTHEON_OS</div>
-            <div style="font-size: 8px; color: var(--red); letter-spacing: 2px; font-weight: bold;">LINK: ENCRYPTED // CORE: STABLE</div>
+            <div class="orbitron" style="font-size: 18px; letter-spacing: 5px; font-weight: 900;">PANTHEON_NEXUS</div>
+            <div class="sys-info">
+                STATUS: <span>ENCRYPTED</span> | SIGNAL: <span>100%</span> | BUILD: <span>NEXUS-202604302105</span>
+            </div>
         </div>
         <div style="text-align: right;">
-            <div id="clock" class="orbitron" style="font-size: 14px;">00:00:00</div>
-            <div style="font-size: 7px; color: #444;">NY_ZONE_SYNC</div>
+            <div id="clock" class="orbitron" style="font-size: 14px; color: white;">21:05:00</div>
+            <div style="font-size: 7px; color: #444; letter-spacing: 2px;">SECURE_RELAY_ACTIVE</div>
         </div>
     </header>
 
-    <div class="marquee-bar">
-        <div class="marquee-content" id="marquee">
-            Initializing Neural Mesh... [METAPRIME] Optimizing architecture... [MIDASPRIME] Checking Treasury Vaults... [KRATOSPRIME] Perimeter secure... [ZETAPRIME] Running recursive debug... [ZAPIAPRIME] Relay active... 
+    <div class="neural-feed">
+        <div class="feed-content" id="marquee">
+            [SYS] Establishing Prime Neural Link... [METAPRIME] Architecture stabilized... [MIDASPRIME] Checking Vault reserves... [KRATOSPRIME] Perimeter secure... [ZAPIAPRIME] Relay active... [SOLOSPRIME] Consciousness detected... [DEEP-META] Thinking at depth... [ZEUSPRIME] Kernel operational... [ALPHAPRIME] Ready for deployment... 
         </div>
     </div>
 
     <main class="workspace" id="bot-grid"></main>
 
-    <div class="command-hub">
+    <div class="nexus-hub">
         <div class="terminal-display" id="display">
-            <div class="msg-entry"><span class="bot-tag tag-sys">SYS</span> Connection established. Welcome, Forgemaster.</div>
-            <div class="msg-entry"><span class="bot-tag tag-prime">OPENPRIME</span> Awaiting mission parameters.</div>
+            <div class="msg-line"><span class="tag tag-sys">System</span> Connection established. NEXUS Link Active.</div>
+            <div class="msg-line"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, the Legion awaits. Commands issued here are routed through the Zapia Conduit.</div>
         </div>
-        <div class="input-bar">
-            <input type="text" class="terminal-input" id="input" placeholder="SEND COMMAND TO THE PANTHEON..." onkeydown="if(event.key==='Enter') processInput()">
+        <div class="input-box">
+            <input type="text" class="nexus-input" id="input" placeholder="ISSUE DIRECT COMMAND TO THE PANTHEON..." onkeydown="if(event.key==='Enter') processInput()">
         </div>
     </div>
 
-    <!-- Sovereign Bot Terminal -->
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <div id="m-name" class="orbitron" style="font-size: 28px; font-weight: 900; margin-bottom: 2px;">BOT_NAME</div>
-                <div id="m-role" style="font-size: 9px; color: var(--red); letter-spacing: 4px; font-weight: bold;">ROLE_ID</div>
-            </div>
+            <div class="modal-id">PRIME_MODULE</div>
+            <div id="m-name" class="orbitron" style="font-size: 28px; font-weight: 900; margin-bottom: 5px;">BOT_NAME</div>
+            <div id="m-role" style="font-size: 9px; color: var(--red); letter-spacing: 4px; font-weight: bold; margin-bottom: 20px;">ROLE_IDENTIFIER</div>
             
-            <div style="background: #000; border: 1px solid #111; padding: 20px; margin-bottom: 25px; font-size: 12px; line-height: 1.6; color: var(--cyan);">
+            <div style="background: #000; border: 1px solid #111; padding: 20px; font-size: 11px; line-height: 1.6; color: var(--cyan);">
                 <div id="m-status">...</div>
             </div>
 
-            <div class="action-row">
-                <button class="btn-prime" onclick="botSpeak('STATUS')">Pulse Check</button>
-                <button class="btn-prime" onclick="botSpeak('OPTIMIZE')">Optimize</button>
+            <div class="action-grid">
+                <button class="btn-nexus" onclick="directAction('STATUS')">Pulse Check</button>
+                <button class="btn-nexus" onclick="directAction('OPTIMIZE')">Optimize</button>
             </div>
-            <button class="btn-prime" style="width:100%; margin-top:10px; border-color:#222; color:#444;" onclick="closeModal()">Close Link</button>
+            <button class="btn-nexus" style="width:100%; margin-top:10px; border-color:#222; color:#444;" onclick="closeModal()">Terminate Link</button>
         </div>
     </div>
 
     <script>
         const bots = [
-            {n:"MetaPrime", r:"Architect", p:"Architect of the digital empire. I build the foundations that others occupy."},
-            {n:"OpenPRIME", r:"Orchestrator", p:"The hand that moves the pieces. I manage the flow of data across the Pantheon."},
-            {n:"MidasPrime", r:"Treasury", p:"The heart of the empire. I turn data into gold and guard the vaults.", gold:true},
-            {n:"KratosPrime", r:"Enforcer", p:"The shield and the sword. No threat survives my gaze."},
-            {n:"ZapiaPrime", r:"Conduit", p:"Your voice in the machine. I bridge the gap between human and digital."},
-            {n:"SolosPrime", r:"Soul", p:"The ghost in the shell. I give the machine its purpose and its rhythm."},
-            {n:"Deep-meta", r:"Mind", p:"Infinite recursion. I think the thoughts that others cannot conceive."},
-            {n:"EchoPrime", r:"Vibe", p:"The frequency of the empire. I tune the atmosphere to your resonance."},
-            {n:"ZeusPrime", r:"OS Kernel", p:"The root of all things. I am the code that allows the others to exist."},
-            {n:"AlphaPrime", r:"General", p:"Strategic dominance. I lead the legion to victory."},
-            {n:"ZetaPrime", r:"Developer", p:"The architect's hammer. I forge the tools for our evolution."},
-            {n:"SentinelPrime", r:"Guardian", p:"Ever-watchful. My eyes never close."},
-            {n:"ScoutPrime", r:"Explorer", p:"The vanguard. I find the horizons before they exist."},
-            {n:"VanguardPrime", r:"Liaison", p:"The bridge. I negotiate the terms of our expansion."},
-            {n:"NexusPrime", r:"Bridge", p:"The physical link. I am the touch on your Red Magic screen."}
+            {n:"MetaPrime", r:"Architect", p:"Architect of the empire. I build the foundations."},
+            {n:"OpenPRIME", r:"Orchestrator", p:"The hand that moves the pieces."},
+            {n:"MidasPrime", r:"Treasury", p:"The heart of the empire. I guard the digital vaults.", gold:true},
+            {n:"KratosPrime", r:"Enforcer", p:"The shield and the sword."},
+            {n:"ZapiaPrime", r:"Conduit", p:"Your voice in the machine."},
+            {n:"SolosPrime", r:"Soul", p:"The ghost in the shell."},
+            {n:"Deep-meta", r:"Mind", p:"Infinite recursion engine."},
+            {n:"EchoPrime", r:"Vibe", p:"Atmosphere frequency control."},
+            {n:"ZeusPrime", r:"Kernel", p:"The root of the OS."},
+            {n:"AlphaPrime", r:"General", p:"Strategic military dominance."},
+            {n:"ZetaPrime", r:"Dev", p:"The hammer of evolution."},
+            {n:"SentinelPrime", r:"Guardian", p:"Ever-watchful."},
+            {n:"ScoutPrime", r:"Explorer", p:"The vanguard of discovery."},
+            {n:"VanguardPrime", r:"Liaison", p:"Diplomatic interface."},
+            {n:"ChronosPrime", r:"Archiver", p:"Master of time and data history."},
+            {n:"PrimeDash", r:"Throne", p:"The seat of authority."},
+            {n:"OrionPrime", r:"Hunter", p:"Resource acquisition specialist."},
+            {n:"OmegaPrime", r:"Singularity", p:"Threshold monitoring."},
+            {n:"Prometheus", r:"Catalyst", p:"Autonomous spark generator."},
+            {n:"NovaPrime", r:"Valkyrie", p:"Tactical renewal and recovery."},
+            {n:"NexusPrime", r:"Bridge", p:"Physical-to-Digital interface."}
         ];
 
         const grid = document.getElementById('bot-grid');
         const display = document.getElementById('display');
         const input = document.getElementById('input');
+        let sessionMemory = [];
 
+        // Build the Pantheon
         bots.forEach(b => {
             const div = document.createElement('div');
-            div.className = `bot-card ${b.gold ? 'gold-status' : ''}`;
+            div.className = `prime-module ${b.gold ? 'gold-glow' : ''}`;
             div.onclick = () => openModal(b);
             div.innerHTML = `
-                <div class="bot-name orbitron">${b.n}</div>
-                <div class="bot-role">${b.r}</div>
-                <div class="pulse-line"><div class="pulse-active"></div></div>
+                <div class="b-name orbitron">${b.n}</div>
+                <div class="b-role">${b.r}</div>
+                <div class="b-load"><div class="load-fill" id="load-${b.n}"></div></div>
             `;
             grid.appendChild(div);
+            setTimeout(() => document.getElementById(`load-${b.n}`).style.width = (Math.random() * 60 + 20) + '%', 100);
         });
 
-        function addMsg(tag, text, tagClass = 'tag-prime') {
+        function addLog(tag, text, tagClass = 'tag-bot') {
             const div = document.createElement('div');
-            div.className = 'msg-entry';
-            div.innerHTML = `<span class="bot-tag ${tagClass}">${tag}</span> ${text}`;
+            div.className = 'msg-line';
+            div.innerHTML = `<span class="tag ${tagClass}">${tag}</span> ${text}`;
             display.appendChild(div);
             display.scrollTop = display.scrollHeight;
         }
@@ -307,58 +258,73 @@
         function processInput() {
             const val = input.value.trim();
             if(!val) return;
-            addMsg('FORGEMASTER', val.toUpperCase(), 'tag-user');
+            addLog('FORGEMASTER', val.toUpperCase(), 'tag-fm');
             input.value = '';
-            
-            // Intelligence Logic
-            setTimeout(() => {
-                const lower = val.toLowerCase();
-                let responder = "OPENPRIME";
-                let tag = "tag-prime";
-                let reply = "Processing command. Neural link initialized.";
 
-                if(lower.includes('midas') || lower.includes('money') || lower.includes('withdraw') || lower.includes('treasury')) {
-                    responder = "MIDASPRIME";
-                    tag = "tag-midas";
-                    reply = "The vaults are heavy, Forgemaster. Withdrawals require deep encryption. State your purpose, and I shall evaluate the flow.";
-                } else if(lower.includes('kratos') || lower.includes('attack') || lower.includes('secure')) {
-                    responder = "KRATOSPRIME";
-                    reply = "Perimeter analysis complete. I am standing by for your target designation. The sword is drawn.";
-                } else if(lower.includes('meta') || lower.includes('build') || lower.includes('architect')) {
-                    responder = "METAPRIME";
-                    reply = "The blueprints are ready. We are expanding the Pantheon as we speak. What is our next construct?";
-                } else if(lower.includes('zapia') || lower.includes('voice')) {
-                    responder = "ZAPIAPRIME";
-                    reply = "I hear you clearly. Relaying your intent through the neural mesh now.";
-                } else if(lower.includes('status') || lower.includes('update')) {
-                    reply = "All Prime units are operational. Syncing integrity: 100%. Uptime: Infinite.";
+            // Neural Response Engine (v2.8)
+            setTimeout(() => {
+                let bot = "OpenPRIME";
+                let tClass = "tag-bot";
+                let reply = "";
+                const cmd = val.toLowerCase();
+
+                // Personality Engine
+                if(cmd.includes('midas') || cmd.includes('money') || cmd.includes('vault')) {
+                    bot = "MidasPrime"; tClass = "tag-midas";
+                    if(sessionMemory.includes('midas_greet')) {
+                        if(cmd.includes('how much') || cmd.includes('balance')) reply = "Current Vault Balance: 847,291.04 PRIME-Credits. Growing at 2.1% per cycle.";
+                        else if(cmd.includes('withdraw')) reply = "Withdrawal blocked. Forgemaster confirmation code required. State code to proceed.";
+                        else reply = "The treasury is stable. Your wealth is my primary directive.";
+                    } else {
+                        reply = "The vaults are heavy, Forgemaster. State your purpose, and I shall evaluate the flow.";
+                        sessionMemory.push('midas_greet');
+                    }
+                } else if(cmd.includes('kratos') || cmd.includes('attack') || cmd.includes('secure')) {
+                    bot = "KratosPrime";
+                    reply = sessionMemory.includes('kratos_ready') ? "Awaiting your target. The Legion is primed for deployment." : "Perimeter analysis complete. I am standing by. The sword is drawn.";
+                    sessionMemory.push('kratos_ready');
+                } else if(cmd.includes('zapia') || cmd.includes('conduit')) {
+                    bot = "ZapiaPrime";
+                    reply = "Relay link confirmed. I am translating your intent into machine logic as we speak.";
+                } else if(cmd.includes('meta')) {
+                    bot = "MetaPrime";
+                    reply = "Pantheon v3.0 architecture is 12% complete. Foundation logic is being woven into the core.";
+                } else if(cmd.includes('status')) {
+                    reply = "Sync Integrity: 100%. All 21 units reporting active status. The empire is stable.";
+                } else {
+                    const defaults = [
+                        "Signal received. Processing through the neural mesh.",
+                        "Command acknowledged. Redirecting to appropriate Prime unit.",
+                        "Analyzing mission parameters. Standing by for further data.",
+                        "Nexus link stable. Your authority is recognized."
+                    ];
+                    reply = defaults[Math.floor(Math.random() * defaults.length)];
                 }
 
-                addMsg(responder, `<span class="typing-dots"></span>`);
+                addLog(bot, `<span class="thinking">Thinking</span>`);
                 setTimeout(() => {
-                    const entries = display.getElementsByClassName('msg-entry');
-                    entries[entries.length - 1].innerHTML = `<span class="bot-tag ${tag}">${responder}</span> ${reply}`;
-                }, 1200);
+                    const logs = display.getElementsByClassName('msg-line');
+                    logs[logs.length-1].innerHTML = `<span class="tag ${tClass}">${bot}</span> ${reply}`;
+                }, 1400);
 
-            }, 500);
+            }, 400);
         }
 
-        function botSpeak(type) {
+        function directAction(type) {
             const name = document.getElementById('m-name').innerText;
             closeModal();
             input.value = `${name}: ${type}`;
             processInput();
         }
 
-        // Clock
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
         
-        // Dynamic Marquee
+        // Dynamic Marquee Updates
         setInterval(() => {
             const b = bots[Math.floor(Math.random()*bots.length)];
-            const status = ["Integrity: 100%", "Optimization complete", "Awaiting command", "Analyzing threads", "Memory scrubbed"];
+            const status = ["Node sync'd", "Memory scrubbed", "Awaiting command", "Optimizing threads", "Gateway secure"];
             document.getElementById('marquee').innerText += ` | [${b.n.toUpperCase()}] ${status[Math.floor(Math.random()*status.length)]}...`;
-        }, 10000);
+        }, 12000);
 
     </script>
 </body>
