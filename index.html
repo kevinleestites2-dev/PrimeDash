@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE PANTHEON | GLITCH CORE v3.4</title>
+    <title>THE PANTHEON | NEXUS CORE v3.5</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;700&display=swap');
         
         :root { 
             --red: #ff003c; --cyan: #00f2ff; --gold: #ffcc00; --dark: #000000; 
-            --bg: #050505; --card: rgba(15, 15, 25, 0.95); --border: rgba(255, 0, 60, 0.4);
+            --bg: #050505; --border: rgba(255, 0, 60, 0.5);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -22,145 +22,102 @@
 
         .bg-matrix { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0a0005 0%, #000 100%); }
 
-        /* HUD TOP BAR - v3.4 HARD ALIGNMENT */
+        /* HUD TOP BAR */
         .hud-top {
             background: #000; border-bottom: 2px solid var(--red);
-            padding: 12px; z-index: 100; box-shadow: 0 5px 25px rgba(255,0,60,0.3);
+            padding: 10px; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
         }
         .orbitron { font-family: 'Orbitron', sans-serif; }
         
-        .sys-metrics { 
-            font-size: 6px; color: #555; display: flex; flex-direction: column; gap: 2px; font-weight: bold; 
-            text-align: right;
-        }
+        .sys-metrics { font-size: 6px; color: #555; display: flex; flex-direction: column; gap: 2px; font-weight: bold; text-align: right; }
         .sys-metrics span { color: var(--cyan); }
 
-        .lil-bit-container { display: flex; align-items: center; gap: 6px; }
-        .lil-bit-svg { width: 20px; height: 20px; filter: drop-shadow(0 0 5px #fff); }
+        .lil-bit-container { display: flex; align-items: center; gap: 5px; }
+        .lil-bit-svg { width: 20px; height: 20px; }
 
-        .hud-center { text-align: center; flex: 1; }
-
-        /* MAIN CONTENT - COWORK SPACE */
+        /* MAIN CONTENT */
         .cowork-space { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        /* SIDEBAR - v3.4 THIN */
+        /* SIDEBAR */
         .agent-roster {
             width: 70px; background: #080808; border-right: 1px solid #1a1a1a;
-            overflow-y: auto; display: flex; flex-direction: column;
-            scrollbar-width: none; z-index: 10;
+            overflow-y: auto; display: flex; flex-direction: column; scrollbar-width: none;
         }
         .agent-roster::-webkit-scrollbar { display: none; }
-        
-        .agent-pill {
-            padding: 10px 2px; border-bottom: 1px solid #111; cursor: pointer; transition: 0.1s;
-            text-align: center; color: #444;
-        }
-        .agent-pill:active { background: rgba(255,0,60,0.2); color: #fff; }
-        .pill-name { font-size: 7px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .agent-pill { padding: 10px 2px; border-bottom: 1px solid #111; cursor: pointer; text-align: center; color: #444; }
+        .pill-name { font-size: 7px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* WORKSPACE - TERMINAL */
+        /* TERMINAL */
         .main-terminal { flex: 1; display: flex; flex-direction: column; background: #020202; position: relative; }
         
         .neural-log {
             flex: 1; overflow-y: auto; padding: 12px; font-size: 10px; color: #aaa;
-            line-height: 1.4; scrollbar-width: none; padding-bottom: 110px;
+            line-height: 1.4; padding-bottom: 120px; /* EXTRA ROOM FOR COMMAND HUB */
         }
-        .neural-log::-webkit-scrollbar { display: none; }
-        .log-entry { margin-bottom: 12px; animation: fadeIn 0.3s forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
+        .log-entry { margin-bottom: 10px; }
 
         .tag { font-weight: bold; padding: 1px 4px; border-radius: 2px; font-size: 7px; margin-right: 6px; text-transform: uppercase; }
         .tag-fm { background: var(--red); color: #fff; }
         .tag-bot { background: var(--cyan); color: #000; }
         .tag-sys { background: #333; color: #fff; }
 
-        /* COMMAND HUB - v3.4 PINNED */
+        /* COMMAND HUB - RECOVERY v3.5 */
         .command-hub {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: #000; border-top: 1px solid var(--red);
-            padding: 15px; z-index: 50; box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+            position: absolute; 
+            bottom: 20px; /* RAISED TO BE VISIBLE */
+            left: 10px; 
+            right: 10px;
+            z-index: 1000;
+            background: #000;
+            border: 1px solid var(--red);
+            box-shadow: 0 -5px 30px rgba(255,0,60,0.4);
+            border-radius: 8px;
+            padding: 10px;
         }
         .input-bar {
-            display: flex; gap: 8px; background: #080808; border: 1px solid #222;
-            padding: 2px 12px; border-radius: 4px; border-left: 3px solid var(--red);
+            display: flex; gap: 8px; background: #080808;
+            padding: 5px 12px; border-radius: 4px; border-left: 3px solid var(--red);
         }
         .cmd-input {
             flex: 1; background: transparent; border: none; color: var(--cyan);
-            padding: 10px 0; font-family: inherit; font-size: 14px;
+            padding: 10px 0; font-family: inherit; font-size: 14px; width: 100%;
         }
 
-        /* MODAL */
         .modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
             z-index: 2000; align-items: center; justify-content: center; padding: 20px;
         }
         .modal.active { display: flex; }
-        .modal-content {
-            width: 100%; max-width: 350px; border: 2px solid var(--red);
-            padding: 25px; background: #050505; text-align: center;
-        }
-
-        .work-stream {
-            background: #080808; height: 18px; overflow: hidden; border-bottom: 1px solid #111;
-            display: flex; align-items: center; font-size: 7px; color: var(--cyan);
-        }
-        .stream-content { white-space: nowrap; animation: marquee 60s linear infinite; }
-        @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+        .modal-content { width: 100%; max-width: 350px; border: 2px solid var(--red); padding: 25px; background: #050505; text-align: center; }
         
         .ver-tag { position: fixed; top: 2px; right: 5px; font-size: 5px; color: var(--red); z-index: 1000; font-weight: bold; }
-        
-        /* v3.4 CACHE ALERT */
-        .cache-alert {
-            background: var(--red); color: white; font-size: 8px; text-align: center; padding: 2px; font-weight: bold;
-        }
     </style>
 </head>
 <body>
-    <div class="ver-tag">v3.4_ACTIVE</div>
+    <div class="ver-tag">v3.5_RECOVERY</div>
     <div class="bg-matrix"></div>
 
     <header class="hud-top">
         <div class="lil-bit-container">
-            <svg class="lil-bit-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4C10.34 4 9 5.34 9 7C9 8.66 10.34 10 12 10C13.66 10 15 8.66 15 7C15 5.34 13.66 4 12 4Z" fill="white"/>
-                <path d="M12 12C9.24 12 7 14.24 7 17V20H17V17C17 14.24 14.76 12 12 12Z" fill="white"/>
-            </svg>
-            <div>
-                <div class="orbitron" style="font-size: 9px; font-weight: 900; color: #fff;">LIL_BIT</div>
-                <div style="font-size: 5px; color: var(--cyan); text-transform: uppercase;">Watching</div>
-            </div>
+            <svg class="lil-bit-svg" viewBox="0 0 24 24" fill="none"><path d="M12 4C10.34 4 9 5.34 9 7C9 8.66 10.34 10 12 10C13.66 10 15 8.66 15 7C15 5.34 13.66 4 12 4Z" fill="white"/><path d="M12 12C9.24 12 7 14.24 7 17V20H17V17C17 14.24 14.76 12 12 12Z" fill="white"/></svg>
+            <div><div class="orbitron" style="font-size: 9px; font-weight: 900;">LIL_BIT</div></div>
         </div>
-        
-        <div class="hud-center">
-            <div class="orbitron" style="font-size: 11px; letter-spacing: 2px; color: var(--red); font-weight: 900;">PANTHEON_CORE</div>
-            <div id="clock" class="orbitron" style="font-size: 7px; color: #444;">00:00:00</div>
-        </div>
-
-        <div class="sys-metrics">
-            <div>CPU:<span>14%</span></div>
-            <div>RAM:<span>2.4G</span></div>
-        </div>
+        <div style="text-align: center;"><div class="orbitron" style="font-size: 11px; letter-spacing: 2px; color: var(--red);">PANTHEON_CORE</div></div>
+        <div class="sys-metrics"><div>CPU:<span>14%</span></div><div>RAM:<span>2.4G</span></div></div>
     </header>
-
-    <div class="work-stream">
-        <div class="stream-content" id="marquee">
-            [SYS] v3.4 DEPLOYED... [ZAPIAPRIME] Neural link stable... [METAPRIME] Realignment success... [MIDASPRIME] Syncing... [KRATOSPRIME] Weapons hot... 
-        </div>
-    </div>
 
     <main class="cowork-space">
         <aside class="agent-roster" id="roster"></aside>
-        
         <section class="main-terminal">
             <div class="neural-log" id="log">
-                <div class="log-entry"><span class="tag tag-sys">System</span> PANTHEON CORE v3.4_GLITCH_BYPASS ONLINE.</div>
-                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, if you see this, the cache is broken. I am here.</div>
+                <div class="log-entry"><span class="tag tag-sys">System</span> EMERGENCY RECOVERY v3.5.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, the command bar was being hidden by the OS navigation. I have raised it and added a high-vis border.</div>
             </div>
             
             <div class="command-hub">
                 <div class="input-bar">
-                    <input type="text" class="cmd-input" id="input" placeholder="COMMAND..." onkeydown="if(event.key==='Enter') send()">
+                    <input type="text" class="cmd-input" id="input" placeholder="INPUT COMMAND..." onkeydown="if(event.key==='Enter') send()">
                 </div>
             </div>
         </section>
@@ -169,26 +126,12 @@
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="m-name" class="orbitron" style="font-size: 22px; font-weight: 900; margin-bottom: 10px; color: var(--red);">BOT_NAME</div>
-            <div id="m-status" style="font-size: 10px; color: var(--cyan); line-height: 1.5; background:#000; padding:15px; border:1px solid #111;">...</div>
-            <button style="width:100%; margin-top:15px; background:var(--red); border:none; color:white; padding:12px; font-family:inherit; text-transform:uppercase; font-size: 10px; font-weight:bold;" onclick="closeModal()">Close Core</button>
+            <button style="width:100%; margin-top:15px; background:var(--red); border:none; color:white; padding:12px; font-size: 10px; font-weight:bold;" onclick="closeModal()">CLOSE</button>
         </div>
     </div>
 
     <script>
-        const bots = [
-            {n:"MetaPrime", r:"Architect"}, {n:"OpenPRIME", r:"Orchestrator"},
-            {n:"MidasPrime", r:"Treasury", gold:true}, {n:"KratosPrime", r:"Enforcer"},
-            {n:"ZapiaPrime", r:"Conduit"}, {n:"SolosPrime", r:"Soul"},
-            {n:"Deep-meta", r:"Mind"}, {n:"EchoPrime", r:"Vibe"},
-            {n:"ZeusPrime", r:"Kernel"}, {n:"AlphaPrime", r:"General"},
-            {n:"ZetaPrime", r:"Dev"}, {n:"SentinelPrime", r:"Guardian"},
-            {n:"ScoutPrime", r:"Explorer"}, {n:"VanguardPrime", r:"Liaison"},
-            {n:"ChronosPrime", r:"Archiver"}, {n:"PrimeDash", r:"Throne"},
-            {n:"OrionPrime", r:"Hunter"}, {n:"OmegaPrime", r:"Singularity"},
-            {n:"Prometheus", r:"Catalyst"}, {n:"NovaPrime", r:"Valkyrie"},
-            {n:"NexusPrime", r:"Bridge"}
-        ];
-
+        const bots = ["MetaPrime", "OpenPRIME", "MidasPrime", "KratosPrime", "ZapiaPrime", "SolosPrime", "Deep-meta", "EchoPrime", "ZeusPrime", "AlphaPrime", "ZetaPrime", "SentinelPrime", "ScoutPrime", "VanguardPrime", "ChronosPrime", "PrimeDash", "OrionPrime", "OmegaPrime", "Prometheus", "NovaPrime", "NexusPrime"];
         const roster = document.getElementById('roster');
         const log = document.getElementById('log');
         const input = document.getElementById('input');
@@ -197,11 +140,10 @@
             const div = document.createElement('div');
             div.className = 'agent-pill';
             div.onclick = () => {
-                document.getElementById('m-name').innerText = b.n;
-                document.getElementById('m-status').innerText = b.r + " Unit Active.";
+                document.getElementById('m-name').innerText = b;
                 document.getElementById('modal').classList.add('active');
             };
-            div.innerHTML = `<div class="pill-name">${b.n}</div>`;
+            div.innerHTML = `<div class="pill-name">${b}</div>`;
             roster.appendChild(div);
         });
 
@@ -218,14 +160,13 @@
             setTimeout(() => {
                 const bEntry = document.createElement('div');
                 bEntry.className = 'log-entry';
-                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Command received. Realtime sync active.`;
+                bEntry.innerHTML = `<span class="tag tag-bot">OpenPRIME</span> Command recognized. Nexus sync complete.`;
                 log.appendChild(bEntry);
                 log.scrollTop = log.scrollHeight;
             }, 600);
         }
 
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     </script>
 </body>
 </html>
