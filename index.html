@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE PANTHEON | AION v3.9</title>
+    <title>THE PANTHEON | CORE v4.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Fira+Code:wght@400;700&display=swap');
         
-        :root { 
-            --red: #ff003c; --cyan: #00f2ff; --gold: #ffcc00; --dark: #000000; 
-            --bg: #050505; --border: rgba(255, 0, 60, 1);
-        }
-        
+        :root { --red: #ff003c; --cyan: #00f2ff; --dark: #000; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body { 
@@ -20,78 +16,66 @@
             display: flex; flex-direction: column;
         }
 
-        /* HUD - TOP BAR */
+        /* HUD - ULTRA SLIM v4.0 */
         .hud-top {
-            height: 60px; background: #000; border-bottom: 2px solid var(--red);
-            padding: 0 15px; z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+            height: 40px; background: #000; border-bottom: 1px solid #222;
+            padding: 0 10px; display: flex; justify-content: space-between; align-items: center;
         }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        
-        /* THE STABILIZER - FLEXIBLE CENTER AREA */
+
+        /* WORKSPACE - CALCULATED HEIGHT */
         .cowork-space { 
-            flex: 1; display: flex; overflow: hidden; 
-            margin-bottom: 80px; /* HARD SPACE FOR CHAT */
+            height: calc(100vh - 120px); /* 40 HUD + 80 CHAT */
+            display: flex; overflow: hidden; 
         }
 
-        /* SIDEBAR */
         .agent-roster {
-            width: 80px; background: #050505; border-right: 1px solid #111;
+            width: 70px; background: #050505; border-right: 1px solid #111;
             overflow-y: auto; display: flex; flex-direction: column; scrollbar-width: none;
         }
-        .agent-pill { padding: 15px 2px; border-bottom: 1px solid #111; cursor: pointer; text-align: center; color: #444; }
-        .pill-name { font-size: 8px; font-weight: 900; }
+        .agent-pill { padding: 12px 2px; border-bottom: 1px solid #111; text-align: center; color: #444; font-size: 7px; font-weight: 900; }
 
-        /* TERMINAL */
         .main-terminal { flex: 1; display: flex; flex-direction: column; background: #020202; overflow: hidden; }
-        .neural-log { flex: 1; overflow-y: auto; padding: 15px; font-size: 11px; color: #bbb; line-height: 1.5; }
-        .log-entry { margin-bottom: 15px; }
+        .neural-log { flex: 1; overflow-y: auto; padding: 12px; font-size: 11px; color: #bbb; line-height: 1.4; }
+        .log-entry { margin-bottom: 12px; }
         .tag { font-weight: bold; padding: 2px 5px; border-radius: 2px; font-size: 7px; margin-right: 7px; text-transform: uppercase; }
         .tag-fm { background: var(--red); color: #fff; }
         .tag-bot { background: var(--cyan); color: #000; }
 
-        /* COMMAND HUB - THE ANCHOR v3.9 */
+        /* COMMAND HUB - ABSOLUTE POSITIONED */
         .command-hub {
-            position: fixed; 
-            bottom: 0; left: 0; right: 0;
-            height: 80px;
-            background: #000; 
-            border-top: 1px solid var(--red);
-            padding: 10px 15px calc(10px + env(safe-area-inset-bottom));
-            z-index: 9999;
-            display: flex; align-items: center;
+            height: 80px; background: #000; border-top: 1px solid var(--red);
+            padding: 10px 15px; display: flex; align-items: center;
+            position: relative; z-index: 100;
         }
         .input-bar {
-            width: 100%; display: flex; gap: 10px; background: #080808;
-            padding: 0 12px; border-radius: 4px; border: 1px solid #222;
-            align-items: center;
+            width: 100%; display: flex; gap: 10px; background: #0a0a0a;
+            padding: 0 10px; border-radius: 4px; border: 1px solid #333;
+            align-items: center; height: 50px;
         }
         .cmd-input {
             flex: 1; background: transparent; border: none; color: var(--cyan);
-            padding: 15px 0; font-family: inherit; font-size: 16px;
+            padding: 10px 0; font-family: inherit; font-size: 16px;
         }
         .send-btn {
             background: var(--red); color: white; border: none; border-radius: 3px;
-            padding: 10px 15px; font-family: 'Orbitron', sans-serif; font-size: 10px;
+            padding: 8px 15px; font-family: 'Orbitron', sans-serif; font-size: 10px;
             font-weight: 900; cursor: pointer;
         }
-
-        .ver-tag { position: fixed; top: 2px; left: 5px; font-size: 5px; color: #222; z-index: 1000; }
     </style>
 </head>
 <body>
-    <div class="ver-tag">v3.9_ANCHORED</div>
-
     <header class="hud-top">
-        <div class="orbitron" style="font-size: 10px; font-weight: 900;">LIL_BIT</div>
-        <div class="orbitron" style="font-size: 12px; letter-spacing: 2px; color: var(--red); font-weight: 900;">AION_NEXUS</div>
-        <div style="font-size: 8px; color: #444;">14% CPU</div>
+        <div class="orbitron" style="font-size: 9px; color: #555;">LIL_BIT</div>
+        <div class="orbitron" style="font-size: 10px; letter-spacing: 2px; color: var(--red); font-weight: 900;">AION_CORE_v4.0</div>
+        <div style="font-size: 7px; color: #333;">ONLINE</div>
     </header>
 
     <main class="cowork-space">
         <aside class="agent-roster" id="roster"></aside>
         <section class="main-terminal">
             <div class="neural-log" id="log">
-                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, v3.9 deployed. Fixed height containers locked. The Command Hub is now physically part of the OS-level bottom bar.</div>
+                <div class="log-entry"><span class="tag tag-bot">OpenPRIME</span> Forgemaster, v4.0 deployed. Entire layout reconstructed with static heights to bypass the browser ghosting.</div>
             </div>
         </section>
     </main>
@@ -112,7 +96,7 @@
         bots.forEach(b => {
             const div = document.createElement('div');
             div.className = 'agent-pill';
-            div.innerHTML = `<div class="pill-name">${b}</div>`;
+            div.innerText = b.toUpperCase();
             roster.appendChild(div);
         });
 
