@@ -3,103 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PANTHEON | MISSION CONTROL</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap)" rel="stylesheet">
+    <title>THE PANTHEON | Mission Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #e1e4e8; margin: 0; }
-        .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 12px; }
-        .metric-val { color: #58a6ff; font-weight: 700; font-size: 2.2rem; line-height: 1.2; }
-        .status-dot { height: 10px; width: 10px; background-color: #3fb950; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .sidebar-item { cursor: pointer; transition: 0.2s; border-bottom: 1px solid #30363d; padding: 1rem; }
-        .sidebar-item:hover { background-color: #21262d; }
-        .active-item { background-color: #21262d; border-left: 4px solid #58a6ff; }
-    </style>
-</head>
-<body class="flex flex-col md:flex-row h-screen">
-    <!-- Sidebar -->
-    <div class="w-full md:w-64 bg-[#161b22] border-r border-[#30363d] overflow-y-auto h-1/3 md:h-full">
-        <div class="p-6 border-b border-[#30363d]">
-            <h1 class="text-xl font-bold tracking-widest text-[#f0f6fc]">PANTHEON</h1>
-            <p class="text-xs text-gray-500 mt-1">FORGEMASTER_AUTHORIZED</p>
-        </div>
-        <nav id="bot-list"></nav>
-    </div>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
-    <!-- Main Content -->
-    <div class="flex-1 overflow-y-auto p-6">
-        <div class="flex justify-between items-start mb-8">
-            <div>
-                <h2 id="bot-name" class="text-4xl font-bold text-[#f0f6fc]">MidasPrime</h2>
-                <div class="mt-2 flex items-center">
-                    <span class="status-dot"></span>
-                    <span id="bot-role" class="text-gray-400 font-semibold uppercase tracking-wider text-sm">Treasury Manager</span>
-                </div>
-            </div>
-            <button onclick="location.reload()" class="bg-[#21262d] border border-[#30363d] px-4 py-2 rounded-md hover:bg-[#30363d] text-sm">REFRESH</button>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 mb-8">
-            <div class="card p-6">
-                <p id="m1-label" class="text-xs text-gray-400 mb-2 uppercase tracking-widest">Total Value</p>
-                <p id="m1-val" class="metric-val">$14,202.40</p>
-            </div>
-            <div class="card p-6">
-                <p id="m2-label" class="text-xs text-gray-400 mb-2 uppercase tracking-widest">Yield</p>
-                <p id="m2-val" class="metric-val">+2.4%</p>
-            </div>
-            <div class="card p-6">
-                <p id="m3-label" class="text-xs text-gray-400 mb-2 uppercase tracking-widest">Withdrawal</p>
-                <p id="m3-val" class="metric-val">4h 20m</p>
-            </div>
-        </div>
-
-        <div class="card p-6">
-            <h3 class="text-sm font-bold mb-4 border-b border-[#30363d] pb-2 text-gray-400 uppercase tracking-widest">◈ OPERATIONAL OVERVIEW</h3>
-            <p id="bot-desc" class="text-gray-300 text-sm leading-relaxed">Orchestrating arbitrage loops across Alpha nodes and managing decentralized treasury growth.</p>
-        </div>
-    </div>
-
-    <script>
-        const BOTS = {
-            "MidasPrime": { role: "Treasury Manager", desc: "Orchestrating arbitrage loops across Alpha nodes.", m: ["Total Value", 14202.40, "$", "Yield", 2.4, "%", "Withdrawal", "4h 20m"] },
-            "Prometheus": { role: "Autonomous Catalyst", desc: "Scanning sub-networks for expansion catalysts.", m: ["Compute", 84.2, "%", "Nodes", 42, "", "Neural Sync", "99.8%"] },
-            "NexusPrime": { role: "Mobile Bridge", desc: "High-fidelity link to the Red Magic 10 Pro.", m: ["Latency", 8, "ms", "RAM Usage", 2.4, "GB", "Uptime", "14h 22m"] },
-            "OrionPrime": { role: "Resource Hunter", desc: "Identifying and acquiring high-signal targets.", m: ["Hunts", 182, "", "Conversion", 4.2, "%", "New Leads", "4"] }
-        };
-
-        const list = document.getElementById('bot-list');
-        Object.keys(BOTS).forEach(name => {
-            const div = document.createElement('div');
-            div.className = `sidebar-item ${name === 'MidasPrime' ? 'active-item' : ''}`;
-            div.innerHTML = `<span class="font-bold text-sm">${name}</span>`;
-            div.onclick = () => selectBot(name, div);
-            list.appendChild(div);
-        });
-
-        function selectBot(name, el) {
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-item'));
-            el.classList.add('active-item');
-            const bot = BOTS[name];
-            document.getElementById('bot-name').innerText = name;
-            document.getElementById('bot-role').innerText = bot.role;
-            document.getElementById('bot-desc').innerText = bot.desc;
-            document.getElementById('m1-label').innerText = bot.m[0];
-            document.getElementById('m1-val').innerText = `\({bot.m[2]}\){bot.m[1]}`;
-            document.getElementById('m2-label').innerText = bot.m[3];
-            document.getElementById('m2-val').innerText = `\({bot.m[4]}\){bot.m[5]}`;
-            document.getElementById('m3-label').innerText = bot.m[6];
-            document.getElementById('m3-val').innerText = bot.m[7];
+        :root {
+            --pantheon-blue: #00d2ff;
+            --pantheon-dark: #050505;
+            --pantheon-card: rgba(20, 20, 25, 0.7);
         }
 
-        setInterval(() => {
-            const m1 = document.getElementById('m1-val');
-            if (m1.innerText.includes('$')) {
-                let val = parseFloat(m1.innerText.replace('$', '').replace(',', ''));
-                val += (Math.random() - 0.5) * 2;
-                m1.innerText = '$' + val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        body {
+            background-color: var(--pantheon-dark);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+
+        .glass {
+            background: var(--pantheon-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px var(--pantheon-blue), 0 0 20px var(--pantheon-blue);
+        }
+
+        .glow-border:hover {
+            border-color: var(--pantheon-blue);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .bot-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .bot-card:active {
+            transform: scale(0.95);
+        }
+
+        .status-online {
+            width: 8px;
+            height: 8px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: var(--pantheon-blue); border-radius: 10px; }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <!-- Background Grid -->
+    <div class="fixed inset-0 z-[-1] opacity-10 pointer-events-none" 
+         style="background-image: radial-gradient(#00d2ff 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <!-- Header -->
+    <header class="mb-8 text-center">
+        <h1 class="orbitron text-3xl md:text-5xl font-bold tracking-widest text-white glow-text uppercase mb-2">
+            The Pantheon
+        </h1>
+        <p class="text-cyan-400 text-xs md:text-sm tracking-[0.3em] font-light uppercase opacity-80">
+            Mission Control Center // v2.0-Alpha
+        </p>
+        <div class="mt-4 flex justify-center gap-4 text-xs">
+            <div class="flex items-center gap-2 glass px-3 py-1 rounded-full">
+                <span id="system-status-dot" class="status-online"></span>
+                <span id="system-status-text" class="text-gray-400 uppercase">System: Online</span>
+            </div>
+            <div class="flex items-center gap-2 glass px-3 py-1 rounded-full text-cyan-500">
+                <i data-lucide="cpu" class="w-3 h-3"></i>
+                <span id="uptime-text">UPTIME: --%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main id="bot-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-w-7xl mx-auto">
+        <!-- Cards will be injected here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-white/5 text-center">
+        <p class="text-xs text-gray-600 tracking-widest uppercase mb-2">
+            Designed for the Forgemaster by the Legion
+        </p>
+        <p id="last-updated" class="text-[10px] text-gray-700 uppercase">Last Signal: Syncing...</p>
+    </footer>
+
+    <script>
+        const defaultBots = [
+            { name: "MetaPrime", role: "Architect", icon: "layout" },
+            { name: "OpenPRIME", role: "Orchestrator", icon: "layers" },
+            { name: "MidasPrime", role: "Treasury", icon: "heart" },
+            { name: "KratosPrime", role: "Enforcer", icon: "shield" },
+            { name: "ZapiaPrime", role: "Conduit", icon: "mic" },
+            { name: "SolosPrime", role: "Soul", icon: "activity" },
+            { name: "Deep-meta", role: "Mind", icon: "brain" },
+            { name: "EchoPrime", role: "Vibe", icon: "waves" },
+            { name: "ZeusPrime", role: "OS Kernel", icon: "cpu" },
+            { name: "AlphaPrime", role: "General", icon: "target" },
+            { name: "ZetaPrime", role: "Developer", icon: "code" },
+            { name: "SentinelPrime", role: "Guardian", icon: "eye" },
+            { name: "ScoutPrime", role: "Explorer", icon: "compass" },
+            { name: "VanguardPrime", role: "Liaison", icon: "message-square" },
+            { name: "ChronosPrime", role: "Archiver", icon: "clock" },
+            { name: "PrimeDash", role: "Throne", icon: "monitor" },
+            { name: "OrionPrime", role: "Acquisition", icon: "shopping-cart" },
+            { name: "OmegaPrime", role: "Singularity", icon: "zap" },
+            { name: "Prometheus", role: "Catalyst", icon: "flame" },
+            { name: "NovaPrime", role: "Valkyrie", icon: "refresh-cw" },
+            { name: "NexusPrime", role: "Bridge", icon: "smartphone" }
+        ];
+
+        async function syncPantheon() {
+            try {
+                // Try to fetch live status from the JSON file
+                const response = await fetch('pantheon_status.json');
+                const data = await response.json();
+                renderBots(data.bots || defaultBots);
+                updateSystemStats(data.system);
+            } catch (e) {
+                console.log("No status file found, using defaults.");
+                renderBots(defaultBots);
+                updateSystemStats({ uptime: "99.9", status: "Online" });
             }
-        }, 3000);
+            document.getElementById('last-updated').innerText = `Last Signal: ${new Date().toLocaleTimeString()}`;
+        }
+
+        function renderBots(botList) {
+            const grid = document.getElementById('bot-grid');
+            grid.innerHTML = '';
+            botList.forEach(bot => {
+                const card = document.createElement('div');
+                card.className = "bot-card glass p-4 rounded-xl flex flex-col items-center text-center glow-border cursor-pointer";
+                card.innerHTML = `
+                    <div class="mb-3 text-cyan-400 opacity-80">
+                        <i data-lucide="${bot.icon || 'bot'}" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="orbitron text-xs md:text-sm font-bold text-white tracking-wider mb-1">${bot.name}</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-tighter">${bot.role}</p>
+                    <div class="mt-4 flex items-center gap-1">
+                        <span class="status-online" style="background-color: ${bot.status === 'Offline' ? '#ff4444' : '#00ff88'}; box-shadow: 0 0 8px ${bot.status === 'Offline' ? '#ff4444' : '#00ff88'}"></span>
+                        <span class="text-[8px] text-gray-400">${bot.status || 'ACTIVE'}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function updateSystemStats(system) {
+            if (system) {
+                document.getElementById('uptime-text').innerText = `UPTIME: ${system.uptime}%`;
+                document.getElementById('system-status-text').innerText = `System: ${system.status}`;
+            }
+        }
+
+        // Initial sync
+        syncPantheon();
+        // Sync every 30 seconds
+        setInterval(syncPantheon, 30000);
     </script>
 </body>
 </html>
