@@ -4,132 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THE PANTHEON | Mission Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&family=Fira+Code:wght@400&display=swap');
-        :root { --pantheon-blue: #00d2ff; --pantheon-dark: #050505; --pantheon-card: rgba(20, 20, 25, 0.9); }
-        body { background-color: var(--pantheon-dark); color: #e0e0e0; font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        .orbitron { font-family: 'Orbitron', sans-serif; }
-        .terminal-font { font-family: 'Fira Code', monospace; }
-        .glass { background: var(--pantheon-card); backdrop-filter: blur(15px); border: 1px solid rgba(0, 210, 255, 0.3); }
-        .glow-text { text-shadow: 0 0 15px var(--pantheon-blue); }
-        .bot-card { appearance: none; background: none; border: 1px solid rgba(0, 210, 255, 0.2); width: 100%; text-align: center; transition: all 0.2s ease; }
-        .bot-card:active { transform: scale(0.92); border-color: var(--pantheon-blue); box-shadow: 0 0 20px rgba(0, 210, 255, 0.4); }
-        .status-online { width: 10px; height: 10px; background-color: #00ff88; border-radius: 50%; box-shadow: 0 0 10px #00ff88; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-        .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); align-items: center; justify-content: center; }
+        :root { --blue: #00d2ff; --dark: #050505; --card: rgba(20, 25, 35, 0.95); }
+        body { background: var(--dark); color: white; font-family: sans-serif; margin: 0; padding: 20px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .title { font-size: 2rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0; color: white; text-shadow: 0 0 10px var(--blue); }
+        .version { font-size: 0.6rem; letter-spacing: 0.5em; color: var(--blue); margin-top: 10px; opacity: 0.7; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 800px; margin: 0 auto; }
+        .card { background: var(--card); border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .card:active { transform: scale(0.95); border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
+        .card-title { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 10px 0 2px 0; }
+        .card-role { font-size: 0.5rem; color: #666; text-transform: uppercase; margin: 0; }
+        .status { font-size: 0.5rem; color: #00ff88; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .dot { width: 6px; height: 6px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 5px #00ff88; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-        .console-line { animation: fadeIn 0.2s ease forwards; opacity: 0; margin-bottom: 4px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
+        .modal-content { background: var(--card); border: 1px solid var(--blue); border-radius: 30px; width: 100%; max-width: 400px; padding: 30px; text-align: center; }
+        .terminal { background: black; border-radius: 15px; height: 150px; margin: 20px 0; padding: 15px; text-align: left; font-family: monospace; font-size: 10px; color: #00ff88; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); }
+        .btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--blue); color: white; border-radius: 15px; font-size: 10px; letter-spacing: 0.2em; cursor: pointer; }
+        .btn:active { background: rgba(0, 210, 255, 0.3); }
+        .close-btn { color: #555; font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; margin-top: 20px; border: none; background: none; cursor: pointer; }
+        svg { width: 32px; height: 32px; fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     </style>
 </head>
-<body class="p-4 pb-20">
-    <div class="fixed inset-0 z-[-1] opacity-20 pointer-events-none" style="background-image: linear-gradient(rgba(0, 210, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 210, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
-    
-    <header class="mb-12 text-center pt-8">
-        <h1 class="orbitron text-4xl font-bold tracking-[0.2em] text-white glow-text uppercase mb-2">The Pantheon</h1>
-        <p class="text-cyan-400 text-[10px] tracking-[0.5em] font-light uppercase opacity-80">Forgemaster Command // v2.3</p>
-    </header>
+<body>
+    <div class="header" onclick="alert('PANTHEON DEBUG: JS IS ACTIVE')">
+        <h1 class="title">THE PANTHEON</h1>
+        <p class="version">FORGEMASTER COMMAND // v2.4 (HARD-LINKED)</p>
+    </div>
 
-    <main id="bot-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-7xl mx-auto"></main>
+    <div class="grid" id="grid"></div>
 
-    <!-- Unified Command Modal -->
-    <div id="command-modal" class="modal p-4" onclick="closeModal()">
-        <div class="glass w-full max-w-lg p-8 rounded-[2rem] border-t-2 border-cyan-400 relative overflow-hidden" onclick="event.stopPropagation()">
-            <div id="modal-icon" class="text-cyan-400 mb-6 flex justify-center scale-150"></div>
-            <h2 id="modal-title" class="orbitron text-4xl font-bold text-center text-white mb-2 tracking-tighter"></h2>
-            <p id="modal-role" class="text-[10px] text-center text-cyan-500 tracking-[0.6em] uppercase mb-10 font-bold"></p>
-            
-            <!-- Terminal Output -->
-            <div id="terminal-box" class="bg-black/80 rounded-2xl p-6 h-52 mb-8 overflow-y-auto border border-cyan-500/10 terminal-font text-[11px] leading-relaxed text-cyan-300">
-                <div class="text-gray-700 mb-4 animate-pulse uppercase tracking-widest text-[9px]">-- Secure Session Established --</div>
-                <div id="console-output"></div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-4">
-                <button onclick="sendCommand('INITIALIZE')" class="py-5 bg-cyan-500/20 border border-cyan-400/50 rounded-2xl orbitron text-xs font-bold text-white tracking-widest active:bg-cyan-500/40">INITIALIZE MODULE</button>
-                <button onclick="sendCommand('STATUS_CHECK')" class="py-4 bg-white/5 border border-white/20 rounded-2xl orbitron text-[10px] text-gray-300 tracking-[0.3em] active:bg-white/10 uppercase">Request Report</button>
-                <button onclick="sendCommand('OPTIMIZE')" class="py-4 bg-white/5 border border-white/20 rounded-2xl orbitron text-[10px] text-gray-300 tracking-[0.3em] active:bg-white/10 uppercase">Optimize Core</button>
-            </div>
-            
-            <button onclick="closeModal()" class="mt-10 w-full py-2 text-[9px] text-gray-600 uppercase tracking-[0.8em] font-bold">Disconnect</button>
+    <div class="modal" id="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 id="m-title" style="margin:0; letter-spacing: 0.2em;">NAME</h2>
+            <p id="m-role" style="font-size: 0.5rem; color: var(--blue); margin-top: 5px; letter-spacing: 0.4em;">ROLE</p>
+            <div class="terminal" id="term"></div>
+            <button class="btn" onclick="cmd('INITIALIZE')">INITIALIZE</button>
+            <button class="btn" onclick="cmd('STATUS')">STATUS CHECK</button>
+            <button class="close-btn" onclick="closeModal()">Disconnect</button>
         </div>
     </div>
 
-    <footer class="fixed bottom-0 left-0 right-0 p-6 glass border-t border-cyan-500/20 text-center">
-        <p class="text-[9px] text-cyan-500/60 tracking-[0.4em] uppercase font-bold">Signal: Operational // Forgemaster Only</p>
-    </footer>
-
     <script>
         const bots = [
-            { name: "MetaPrime", role: "Architect", icon: "layout" }, { name: "OpenPRIME", role: "Orchestrator", icon: "layers" },
-            { name: "MidasPrime", role: "Treasury", icon: "heart" }, { name: "KratosPrime", role: "Enforcer", icon: "shield" },
-            { name: "ZapiaPrime", role: "Conduit", icon: "mic" }, { name: "SolosPrime", role: "Soul", icon: "activity" },
-            { name: "Deep-meta", role: "Mind", icon: "brain" }, { name: "EchoPrime", role: "Vibe", icon: "waves" },
-            { name: "ZeusPrime", role: "OS Kernel", icon: "cpu" }, { name: "AlphaPrime", role: "General", icon: "target" },
-            { name: "ZetaPrime", role: "Developer", icon: "code" }, { name: "SentinelPrime", role: "Guardian", icon: "eye" },
-            { name: "ScoutPrime", role: "Explorer", icon: "compass" }, { name: "VanguardPrime", role: "Liaison", icon: "message-square" },
-            { name: "ChronosPrime", role: "Archiver", icon: "clock" }, { name: "PrimeDash", role: "Throne", icon: "monitor" },
-            { name: "OrionPrime", role: "Acquisition", icon: "shopping-cart" }, { name: "OmegaPrime", role: "Singularity", icon: "zap" },
-            { name: "Prometheus", role: "Catalyst", icon: "flame" }, { name: "NovaPrime", role: "Valkyrie", icon: "refresh-cw" },
-            { name: "NexusPrime", role: "Bridge", icon: "smartphone" }
+            {n:"MetaPrime", r:"Architect"}, {n:"OpenPRIME", r:"Orchestrator"},
+            {n:"MidasPrime", r:"Treasury"}, {n:"KratosPrime", r:"Enforcer"},
+            {n:"ZapiaPrime", r:"Conduit"}, {n:"SolosPrime", r:"Soul"}
         ];
-
-        const grid = document.getElementById('bot-grid');
-        bots.forEach(bot => {
-            const btn = document.createElement('button');
-            btn.className = "glass p-6 rounded-[1.5rem] flex flex-col items-center text-center bot-card";
-            btn.onclick = () => openModal(bot);
-            btn.innerHTML = `
-                <div class="mb-4 text-cyan-400"><i data-lucide="${bot.icon}" class="w-10 h-10"></i></div>
-                <h3 class="orbitron text-[10px] font-bold text-white tracking-widest mb-1 uppercase">${bot.name}</h3>
-                <p class="text-[7px] text-cyan-500/60 uppercase tracking-widest font-bold">${bot.role}</p>
-                <div class="mt-6 flex items-center gap-2">
-                    <span class="status-online"></span>
-                    <span class="text-[7px] text-white/40 tracking-widest uppercase">Live</span>
-                </div>
+        
+        const grid = document.getElementById('grid');
+        bots.forEach(b => {
+            const d = document.createElement('div');
+            d.className = 'card';
+            d.onclick = () => openModal(b);
+            d.innerHTML = `
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <div class="card-title">${b.n}</div>
+                <div class="card-role">${b.r}</div>
+                <div class="status"><div class="dot"></div>SYNC'D</div>
             `;
-            grid.appendChild(btn);
+            grid.appendChild(d);
         });
 
-        lucide.createIcons();
-
-        function openModal(bot) {
-            document.getElementById('modal-title').innerText = bot.name;
-            document.getElementById('modal-role').innerText = bot.role;
-            document.getElementById('modal-icon').innerHTML = `<i data-lucide="${bot.icon}" class="w-16 h-16"></i>`;
-            document.getElementById('console-output').innerHTML = "";
-            lucide.createIcons();
-            document.getElementById('command-modal').classList.add('active');
-            
-            // Auto-log entry
-            setTimeout(() => logToConsole(`LINK ESTABLISHED WITH ${bot.name.toUpperCase()}...`), 200);
+        function openModal(b) {
+            document.getElementById('m-title').innerText = b.n;
+            document.getElementById('m-role').innerText = b.r;
+            document.getElementById('term').innerHTML = '> LINK ESTABLISHED...';
+            document.getElementById('modal').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('command-modal').classList.remove('active');
+            document.getElementById('modal').classList.remove('active');
         }
 
-        function logToConsole(text, color = "text-cyan-300") {
-            const out = document.getElementById('console-output');
-            const line = document.createElement('div');
-            line.className = `console-line ${color}`;
-            line.innerText = `> ${text}`;
-            out.appendChild(line);
-            out.scrollTop = out.scrollHeight;
+        function cmd(c) {
+            const t = document.getElementById('term');
+            t.innerHTML += `<br>> SENDING: ${c}...<br>> SUCCESS.`;
+            t.scrollTop = t.scrollHeight;
         }
-
-        function sendCommand(cmd) {
-            const botName = document.getElementById('modal-title').innerText;
-            logToConsole(`CMD: ${cmd}`, "text-white font-bold");
-            setTimeout(() => logToConsole(`ENCRYPTING PACKET...`, "text-gray-500"), 300);
-            setTimeout(() => logToConsole(`UPLOADING TO GITHUB_PANTHEON_API...`, "text-cyan-500"), 600);
-            setTimeout(() => logToConsole(`SUCCESS: ${botName} notified.`, "text-green-400"), 1200);
-            
-            // Vibrations if supported
-            if (window.navigator.vibrate) window.navigator.vibrate(50);
-        }
+        
+        console.log("Pantheon v2.4 Active");
     </script>
 </body>
 </html>
